@@ -1,0 +1,30 @@
+== zlx ==
+
+=== zlx array ===
+
+macros to be defined before "array.h"
+* F(name):
+  - generates the names of functions declared by array
+  - if not defined it defaults to <type>_array_<func_name>
+* CMP(a, b): 
+  - expression that compares a and b returning 0 for equal, 
+    negative for a < b, and positive for a > b
+* EQU(a, b):
+  - expression that returns non-zero if a == b and 0 otherwise
+* FDP:
+  - function declaration prefix
+
+* FDS:
+  - function declaration suffix
+
+* ZLX_BODY:
+  - if defined the function implementations are generated when "array.h" is
+    included
+
+functions defined:
+
+FDP void F(set) (T * arr, size_t n, T val) FDS;
+- sets n items to val at arr
+
+FDP int F(cmp) (T const * a, T const * b, size_t n) FDS;
+
