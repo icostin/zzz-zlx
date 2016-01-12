@@ -3,7 +3,7 @@ projects := zlx zlxstest zlxdtest
 zlx_prod := slib dlib
 
 zlx_csrc := stdarray.c misc.c
-zlx_chdr := zlx.h zlx/base.h zlx/array.h zlx/stdarray.h
+zlx_chdr := zlx.h $(wildcard zlx/*.h)
 zlxstest_csrc := test.c
 zlxdtest_csrc := test.c
 

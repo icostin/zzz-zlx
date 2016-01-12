@@ -5,7 +5,7 @@
 #endif
 
 #ifndef F
-#define F(_n) ZLX_TP2D(ZLX_TP2B(T, _array_), _n)
+#define F(_n) (ZLX_TP2D(ZLX_TP2B(T, _array_), _n))
 #endif
 
 #ifndef CMP
@@ -23,6 +23,7 @@
 #ifndef FDS
 #define FDS
 #endif
+
 
 FDP void F(set) (T * arr, size_t n, T val) FDS;
 FDP int F(cmp) (T const * a, T const * b, size_t n) FDS;

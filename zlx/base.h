@@ -26,14 +26,16 @@ typedef   signed __int64  int64_t;
 #define ZLX_CALL
 #endif
 
-#ifdef _ISOC99_SOURCE
-#define ZLX_RESTRICT restrict
-#elif _MSC_VER >= 1600
-#define ZLX_RESTRICT __restrict
-#elif __GNUC__ >= 3
-#define ZLX_RESTRICT __restrict__
-#else
-#define ZLX_RESTRICT
+#ifndef ZLX_RESTRICT
+#   ifdef _ISOC99_SOURCE
+#       define ZLX_RESTRICT restrict
+#   elif _MSC_VER >= 1600
+#       define ZLX_RESTRICT __restrict
+#   elif __GNUC__ >= 3
+#       define ZLX_RESTRICT __restrict__
+#   else
+#       define ZLX_RESTRICT
+#   endif
 #endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)

@@ -90,8 +90,9 @@ $(eval $(foreach b,$(builders),$(call gen_builder_vars,$b)))
 all: $(projects)
 
 clean:
-	rm -f $(patsubst %,$(BLD_DIR)/%-*,$(projects))
-	rm -f $(foreach p,$(projects),$(foreach q,$($p_prod),$(foreach c,$($p_cfg),$(foreach b,$($p_bld),$(call prod_path,$p,$q,$c,$b)))))
+	-rm -f $(patsubst %,$(BLD_DIR)/%_*,$(projects))
+	-rm -f $(foreach p,$(projects),$(foreach q,$($p_prod),$(foreach c,$($p_cfg),$(foreach b,$($p_bld),$(call prod_path,$p,$q,$c,$b)))))
+	-rm -f $(foreach p,$(projects),$(foreach b,$($p_bld),$(patsubst %,$(OUT_DIR)/$b/include/%,$($p_chdr))))
 
 cleanall:
 	rm -rf $(BLD_DIR)
@@ -139,7 +140,7 @@ define gen_cobj_rule
 
 
 $(call cprod,$1_$2_$3_$4,$5,o): $(call cprod,$1_$2_$3_$4,$5,d) $(make_deps) $(patsubst %,$(OUT_DIR)/$4/%,$(foreach d,$($1_idep),$($d_chdr_inc_dirs))) | $(BLD_DIR)
-	$($4_cc) -MT $$@ -MMD -MP -MF $(call cprod,$1_$2_$3_$4,$5,tmpd) -c $(call bld_cflags,$1,$2,$3,$4) $5 -o$$@
+	$($4_cc) -MT $$@ -MMD -MF $(call cprod,$1_$2_$3_$4,$5,tmpd) -c $(call bld_cflags,$1,$2,$3,$4) $5 -o$$@
 	mv -f $(call cprod,$1_$2_$3_$4,$5,tmpd) $(call cprod,$1_$2_$3_$4,$5,d)
 
 $(call cprod,$1_$2_$3_$4,$5,d): ;
@@ -159,8 +160,8 @@ define gen_slib_rule
 
 .PHONY: $1_slib_$2_$3
 $1_slib_$2_$3: $(call prod_path,$1,slib,$2,$3) $(patsubst %,$(OUT_DIR)/$3/include/%,$($1_chdr))
-$(call prod_path,$1,slib,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_slib_$2_$3,$s,o)) | $(OUT_DIR)/$3/$($3_slib_out_dir)
-	$($3_ar) rcs $$@ $$^
+$(call prod_path,$1,slib,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_slib_$2_$3,$s,o)) $(foreach d,$($1_idep),$d_$2_$3) | $(OUT_DIR)/$3/$($3_slib_out_dir)
+	$($3_ar) rcs $$@ $(foreach s,$($1_csrc),$(call cprod,$1_slib_$2_$3,$s,o))
 
 $(foreach s,$($1_csrc),$(call gen_cobj_rule,$1,slib,$2,$3,$s))
 
@@ -174,8 +175,8 @@ define gen_dlib_rule
 
 .PHONY: $1_dlib_$2_$3
 $1_dlib_$2_$3: $(call prod_path,$1,dlib,$2,$3) $(patsubst %,$(OUT_DIR)/$3/include/%,$($1_chdr))
-$(call prod_path,$1,dlib,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_dlib_$2_$3,$s,o)) | $(OUT_DIR)/$3/$($3_dlib_out_dir)
-	$($3_cc) -o $$@ $$^ $(call bld_ldflags,$1,dlib,$2,$3)
+$(call prod_path,$1,dlib,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_dlib_$2_$3,$s,o)) $(foreach d,$($1_idep),$d_$2_$3) | $(OUT_DIR)/$3/$($3_dlib_out_dir)
+	$($3_cc) -o $$@ $(foreach s,$($1_csrc),$(call cprod,$1_dlib_$2_$3,$s,o)) $(call bld_ldflags,$1,dlib,$2,$3)
 	$(and $(filter yes,$($2_run_strip)),$($3_strip) $$@)
 
 $(foreach s,$($1_csrc),$(call gen_cobj_rule,$1,dlib,$2,$3,$s))
@@ -187,8 +188,8 @@ define gen_exe_rule
 
 .PHONY: $1_exe_$2_$3
 $1_exe_$2_$3: $(call prod_path,$1,exe,$2,$3)
-$(call prod_path,$1,exe,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_exe_$2_$3,$s,o)) | $(OUT_DIR)/$3/$($3_exe_out_dir)
-	$($3_cc) -o $$@ $$^ $(call bld_ldflags,$1,exe,$2,$3)
+$(call prod_path,$1,exe,$2,$3): $(foreach s,$($1_csrc),$(call cprod,$1_exe_$2_$3,$s,o)) $(foreach d,$($1_idep),$d_$2_$3) | $(OUT_DIR)/$3/$($3_exe_out_dir)
+	$($3_cc) -o $$@ $(foreach s,$($1_csrc),$(call cprod,$1_exe_$2_$3,$s,o)) $(call bld_ldflags,$1,exe,$2,$3)
 	$(and $(filter yes,$($2_run_strip)),$($3_strip) $$@)
 
 $(foreach s,$($1_csrc),$(call gen_cobj_rule,$1,exe,$2,$3,$s))
