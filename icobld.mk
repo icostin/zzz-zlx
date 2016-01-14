@@ -24,6 +24,8 @@ builders := $c
 $c_cc := $(CC)
 $c_ar := $(AR)
 $c_strip := strip
+$c_dlib_cflags := -fPIC
+$c_dlib_ldflags := -shared
 endif
 
 ifeq ($(PREFIX_DIR),)
@@ -111,6 +113,16 @@ endef
 #$(info $(foreach p,$(projects),$(call gen_prj_vars,$p)))
 $(eval $(foreach p,$(projects),$(call gen_prj_vars,$p)))
 
+# gen_prj_prod_vars (1: prj, 2: prod)
+define gen_prj_prod_vars
+
+$1_$2_prj := $1
+$1_$2_prod := $2
+
+endef
+
+$(eval $(foreach p,$(projects),$(foreach q,$($p_prod),$(call gen_prj_prod_vars,$p,$q))))
+
 # gen_bld_prod_cfg_vars (1: bld, 2: prod, 3: cfg)
 define gen_bld_prod_cfg_vars
 
@@ -139,7 +151,7 @@ bld_cflags = -I$(OUT_DIR)/$4/include $($4_$2_$3_cflags) $($1_$2_cflags) $(call $
 define gen_cobj_rule
 
 
-$(call cprod,$1_$2_$3_$4,$5,o): $(call cprod,$1_$2_$3_$4,$5,d) $(make_deps) $(patsubst %,$(OUT_DIR)/$4/%,$(foreach d,$($1_idep),$($d_chdr_inc_dirs))) | $(BLD_DIR)
+$(call cprod,$1_$2_$3_$4,$5,o): $(call cprod,$1_$2_$3_$4,$5,d) $(make_deps) $(patsubst %,$(OUT_DIR)/$4/include/%,$(foreach d,$($1_idep),$($($d_prj)_chdr))) | $(BLD_DIR)
 	$($4_cc) -MT $$@ -MMD -MF $(call cprod,$1_$2_$3_$4,$5,tmpd) -c $(call bld_cflags,$1,$2,$3,$4) $5 -o$$@
 	mv -f $(call cprod,$1_$2_$3_$4,$5,tmpd) $(call cprod,$1_$2_$3_$4,$5,d)
 

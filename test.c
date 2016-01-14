@@ -23,6 +23,7 @@ struct irbt_node_s {
 };
 
 #define NODE_REF_T irbt_node_t *
+#define NODE_NULL_REF NULL
 #define PATH_T irbt_path_t
 #define KEY_T unsigned int
 #define NODE_FMT "%u"
@@ -33,6 +34,29 @@ struct irbt_node_s {
 #define SET_CHILD(_node, _side, _child) ((_node)->links[(_side)] = (_child))
 #define GET_COLOR(_node) ((_node)->color)
 #define SET_COLOR(_node, _color) ((_node)->color = (_color))
+#include <zlx/rbtree.h>
+
+typedef struct jrbt_tree_s jrbt_tree_t;
+struct jrbt_tree_s
+{
+    unsigned int * links[2];
+    uint8_t * colors;
+    unsigned int * keys;
+};
+
+#define TREE_CTX_T jrbt_tree_t *
+#define NODE_REF_T unsigned int
+#define NODE_NULL_REF 0
+#define PATH_T jrbt_path_t
+#define KEY_T unsigned int
+#define NODE_FMT "%u"
+#define NODE_PRINT_ARG(_n) tree_ctx->keys[_n]
+#define FNAME(_n) jrbt_##_n
+#define KCMP(_k, _n) ((_k) == tree_ctx->keys[_n] ? 0 : ((_k) < tree_ctx->keys[_n] ? -1 : +1))
+#define GET_CHILD(_node, _side) (tree_ctx->links[_side][_node])
+#define SET_CHILD(_node, _side, _child) (tree_ctx->links[_side][_node] = (_child))
+#define GET_COLOR(_node) (tree_ctx->colors[(_node)])
+#define SET_COLOR(_node, _color) (tree_ctx->colors[(_node)] = (_color))
 #include <zlx/rbtree.h>
 
 #if _DEBUG
@@ -89,6 +113,61 @@ int irbt_test ()
     return 0;
 }
 
+/* jrbt_test ****************************************************************/
+int jrbt_test ()
+{
+    jrbt_tree_t tree;
+    jrbt_path_t path;
+    unsigned int m;
+    unsigned int s, i, n = 10 * 1000 * 1000, k;
+    size_t z;
+
+    z = (n + 1) * (sizeof(unsigned int) * 3 + sizeof(uint8_t));
+    tree.links[0] = malloc(z);
+    if (!tree.links[0]) return 2;
+    memset(tree.links[0], 0, z);
+    tree.links[1] = tree.links[0] + n + 1;
+    tree.keys = tree.links[1] + n + 1;
+    tree.colors = (uint8_t *) (tree.keys + n + 1);
+    jrbt_init(0, &tree);
+
+    for (i = 0; i < n; ++i) {
+        k = (i * 31 + 1) % n;
+        P("- search for %u: ", k);
+        s = jrbt_search(&path, 0, k, &tree);
+        jrbt_dbg_print_path(&path, &tree);
+        if (s != ZLX_RBTREE_NOT_FOUND) return 1;
+        tree.keys[i + 1] = k;
+        P("- inserting %u\n", k);
+        jrbt_insert(&path, i + 1, &tree);
+        jrbt_dbg_print(tree.links[0][0], 0, "root", &tree);
+    }
+
+    for (i = 0, m = jrbt_first(&path, 0, &tree); m; 
+         m = jrbt_next(&path, &tree), ++i) {
+        P("- checking %u\n", i);
+        if (tree.keys[m] != i) {
+            fprintf(stderr, "rbtree test: expecting key %u, not %u\n", 
+                    i, tree.keys[m]);
+            return 1;
+        }
+    }
+    for (i = 0; i < n; ++i) {
+        P("- deleting %u\n", i);
+        s = jrbt_search(&path, 0, i, &tree);
+        if (s != ZLX_RBTREE_FOUND) return 1;
+        jrbt_delete(&path, &tree);
+        jrbt_dbg_print(tree.links[0][0], 0, "root", &tree);
+    }
+    if (i != n) {
+        fprintf(stderr, "rbtree test: expecting %u nodes, not %u\n", n, i);
+        return 1;
+    }
+
+    free(tree.links[0]);
+    return 0;
+}
+
 /* array_test ***************************************************************/
 int array_test ()
 {
@@ -112,7 +191,8 @@ int main ()
 
     printf("zlx test using %s\n", zlx_lib_name);
     t = array_test(); r |= t; printf("array_test: %u\n", t);
+    t = jrbt_test(); r |= t; printf("jrbt_test: %u\n", t);
     t = irbt_test(); r |= t; printf("irbt_test: %u\n", t);
-    return 0;
+    return t;
 }
 

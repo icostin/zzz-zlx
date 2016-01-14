@@ -31,6 +31,10 @@
  * whose left child is the real root
  */
 
+#ifndef CALL_CONV
+#define CALL_CONV
+#endif
+
 #ifndef NODE_REF_T
 #error NODE_REF_T must be defined to the node type
 #endif
@@ -75,49 +79,105 @@
 #define FDS
 #endif
 
-typedef struct ZLX_TP2A(PATH_T, _s) PATH_T;
-struct ZLX_TP2A(PATH_T, _s) {
+#ifdef TREE_CTX_T
+#define CALL_CTX , tree_ctx
+#define DECL_CTX , TREE_CTX_T tree_ctx
+#define UNUSED_CTX (void) tree_ctx;
+#else
+#define CALL_CTX
+#define DECL_CTX
+#define UNUSED_CTX
+#endif
+
+typedef struct ZLX_TP2B(PATH_T, _s) PATH_T;
+struct ZLX_TP2B(PATH_T, _s) {
     NODE_REF_T nodes[ZLX_DEPTH_LIMIT];
     uint8_t sides[ZLX_DEPTH_LIMIT];
     unsigned int depth;
 };
 
-FDP void FNAME(init) (NODE_REF_T guard) FDS;
-
-FDP unsigned int FNAME(search) (PATH_T * ZLX_RESTRICT path, 
-                            NODE_REF_T guard, 
-                            KEY_T key) FDS;
-
-FDP NODE_REF_T FNAME(extreme) (PATH_T * ZLX_RESTRICT path, 
-                               NODE_REF_T guard,
-                               unsigned int side) FDS;
-
-ZLX_INLINE NODE_REF_T FNAME(first) 
+/* init *********************************************************************/
+FDP void CALL_CONV FNAME(init)
     (
-        PATH_T * ZLX_RESTRICT path, 
         NODE_REF_T guard
+        DECL_CTX
+    ) FDS;
+
+/* search *******************************************************************/
+FDP unsigned int CALL_CONV FNAME(search)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard,
+        KEY_T key
+        DECL_CTX
+    ) FDS;
+
+/* extreme ******************************************************************/
+FDP NODE_REF_T CALL_CONV FNAME(extreme)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard,
+        unsigned int side
+        DECL_CTX
+    ) FDS;
+
+/* first ********************************************************************/
+ZLX_INLINE NODE_REF_T CALL_CONV FNAME(first)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard
+        DECL_CTX
     )
 {
-    return FNAME(extreme)(path, guard, ZLX_RBTREE_LEFT);
+    return FNAME(extreme)(path, guard, ZLX_RBTREE_LEFT CALL_CTX);
 }
 
-ZLX_INLINE NODE_REF_T FNAME(last) 
-    (PATH_T * ZLX_RESTRICT path, NODE_REF_T guard) {
-    return FNAME(extreme)(path, guard, ZLX_RBTREE_RIGHT);
+/* last *********************************************************************/
+ZLX_INLINE NODE_REF_T FNAME(last)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard
+        DECL_CTX
+    )
+{
+    return FNAME(extreme)(path, guard, ZLX_RBTREE_RIGHT CALL_CTX);
 }
 
-FDP NODE_REF_T FNAME(np) (PATH_T * ZLX_RESTRICT path, unsigned int side) FDS;
+/* np ***********************************************************************/
+FDP NODE_REF_T CALL_CONV FNAME(np)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        unsigned int side
+        DECL_CTX
+    ) FDS;
 
-ZLX_INLINE NODE_REF_T FNAME(next) (PATH_T * ZLX_RESTRICT path) {
-    return FNAME(np)(path, ZLX_RBTREE_RIGHT);
+/* next *********************************************************************/
+ZLX_INLINE NODE_REF_T FNAME(next)
+    (
+        PATH_T * ZLX_RESTRICT path
+        DECL_CTX
+    )
+{
+    return FNAME(np)(path, ZLX_RBTREE_RIGHT CALL_CTX);
 }
 
-ZLX_INLINE NODE_REF_T FNAME(prev) (PATH_T * ZLX_RESTRICT path) {
-    return FNAME(np)(path, ZLX_RBTREE_LEFT);
+/* prev *********************************************************************/
+ZLX_INLINE NODE_REF_T FNAME(prev)
+    (
+        PATH_T * ZLX_RESTRICT path
+        DECL_CTX
+    )
+{
+    return FNAME(np)(path, ZLX_RBTREE_LEFT CALL_CTX);
 }
 
-ZLX_INLINE void FNAME(path_copy) (PATH_T * ZLX_RESTRICT out, 
-                                  PATH_T * ZLX_RESTRICT in) {
+/* path_copy ****************************************************************/
+ZLX_INLINE void FNAME(path_copy)
+    (
+        PATH_T * ZLX_RESTRICT out,
+        PATH_T * ZLX_RESTRICT in
+    )
+{
     unsigned int i;
     out->depth = in->depth;
     for (i = 0; i <= in->depth; ++i) {
@@ -126,15 +186,53 @@ ZLX_INLINE void FNAME(path_copy) (PATH_T * ZLX_RESTRICT out,
     }
 }
 
-FDP void FNAME(insert) (PATH_T * ZLX_RESTRICT path, NODE_REF_T node) FDS;
+/* insert *******************************************************************/
+FDP void CALL_CONV FNAME(insert)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T node
+        DECL_CTX
+    ) FDS;
 
-FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS;
+/* delete *******************************************************************/
+FDP void CALL_CONV FNAME(delete)
+    (
+        PATH_T * ZLX_RESTRICT path
+        DECL_CTX
+    ) FDS;
 
-#if !_DEBUG
-ZLX_INLINE void FNAME(dbg_print) (NODE_REF_T n, int depth, char * pfx) 
-{ (void) n, (void) depth, (void) pfx; }
-ZLX_INLINE void FNAME(dbg_print_path) (PATH_T * ZLX_RESTRICT p) 
-{ (void) p; }
+#if _DEBUG
+/* dbg_print ****************************************************************/
+FDP void CALL_CONV FNAME(dbg_print)
+    (
+        NODE_REF_T n,
+        int depth,
+        char * pfx
+        DECL_CTX
+    ) FDS;
+
+/* dbg_print_path ***********************************************************/
+FDP void CALL_CONV FNAME(dbg_print_path)
+    (
+        PATH_T * ZLX_RESTRICT p
+        DECL_CTX
+    ) FDS;
+#else
+ZLX_INLINE void FNAME(dbg_print)
+    (
+        NODE_REF_T n,
+        int depth,
+        char * pfx
+        DECL_CTX
+    )
+{ (void) n, (void) depth, (void) pfx; UNUSED_CTX }
+
+ZLX_INLINE void FNAME(dbg_print_path)
+    (
+        PATH_T * ZLX_RESTRICT p
+        DECL_CTX
+    )
+{ (void) p; UNUSED_CTX }
 #endif
 
 /* ZLX_BODY *****************************************************************/
@@ -152,7 +250,11 @@ ZLX_INLINE void FNAME(dbg_print_path) (PATH_T * ZLX_RESTRICT p)
     ((_n) == NODE_NULL_REF || GET_COLOR((_n)) == ZLX_RBTREE_BLACK)
 
 /* init *********************************************************************/
-FDP void FNAME(init) (NODE_REF_T guard) FDS
+FDP void CALL_CONV FNAME(init)
+    (
+        NODE_REF_T guard
+        DECL_CTX
+    ) FDS
 {
     SET_CHILD(guard, ZLX_RBTREE_LEFT, NODE_NULL_REF);
     SET_CHILD(guard, ZLX_RBTREE_RIGHT, NODE_NULL_REF);
@@ -160,9 +262,13 @@ FDP void FNAME(init) (NODE_REF_T guard) FDS
 }
 
 /* search *******************************************************************/
-FDP unsigned int FNAME(search) (PATH_T * ZLX_RESTRICT path, 
-                                NODE_REF_T guard, 
-                                KEY_T key) FDS
+FDP unsigned int CALL_CONV FNAME(search)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard,
+        KEY_T key
+        DECL_CTX
+    ) FDS
 {
     NODE_REF_T n;
     unsigned int i;
@@ -188,9 +294,13 @@ FDP unsigned int FNAME(search) (PATH_T * ZLX_RESTRICT path,
 }
 
 /* extreme ******************************************************************/
-FDP NODE_REF_T FNAME(extreme) (PATH_T * ZLX_RESTRICT path, 
-                               NODE_REF_T guard,
-                               unsigned int side) FDS
+FDP NODE_REF_T CALL_CONV FNAME(extreme)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T guard,
+        unsigned int side
+        DECL_CTX
+    ) FDS
 {
     NODE_REF_T n;
     NODE_REF_T m;
@@ -198,7 +308,7 @@ FDP NODE_REF_T FNAME(extreme) (PATH_T * ZLX_RESTRICT path,
 
     path->nodes[0] = guard;
     path->sides[0] = side;
-    for (i = 0, m = NODE_NULL_REF, n = GET_CHILD(guard, ZLX_RBTREE_BLACK); n; 
+    for (i = 0, m = NODE_NULL_REF, n = GET_CHILD(guard, ZLX_RBTREE_BLACK); n;
          n = GET_CHILD(n, side))
      {
          path->nodes[++i] = m = n;
@@ -209,7 +319,12 @@ FDP NODE_REF_T FNAME(extreme) (PATH_T * ZLX_RESTRICT path,
 }
 
 /* np ***********************************************************************/
-FDP NODE_REF_T FNAME(np) (PATH_T * ZLX_RESTRICT path, unsigned int side) FDS
+FDP NODE_REF_T CALL_CONV FNAME(np)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        unsigned int side
+        DECL_CTX
+    ) FDS
 {
     NODE_REF_T n;
     NODE_REF_T m;
@@ -236,7 +351,12 @@ FDP NODE_REF_T FNAME(np) (PATH_T * ZLX_RESTRICT path, unsigned int side) FDS
 }
 
 /* insert *******************************************************************/
-FDP void FNAME(insert) (PATH_T * ZLX_RESTRICT path, NODE_REF_T node) FDS
+FDP void CALL_CONV FNAME(insert)
+    (
+        PATH_T * ZLX_RESTRICT path,
+        NODE_REF_T node
+        DECL_CTX
+    ) FDS
 {
     NODE_REF_T parent;
     NODE_REF_T grandpa;
@@ -294,7 +414,11 @@ FDP void FNAME(insert) (PATH_T * ZLX_RESTRICT path, NODE_REF_T node) FDS
 }
 
 /* delete *******************************************************************/
-FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS
+FDP void CALL_CONV FNAME(delete)
+    (
+        PATH_T * ZLX_RESTRICT path
+        DECL_CTX
+    ) FDS
 {
     NODE_REF_T o;
     NODE_REF_T d;
@@ -310,10 +434,10 @@ FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS
 
     od = path->depth;
     o = path->nodes[od]; // the node we want to delete
-    if (GET_CHILD(o, ZLX_RBTREE_LEFT) != NODE_NULL_REF && 
+    if (GET_CHILD(o, ZLX_RBTREE_LEFT) != NODE_NULL_REF &&
         GET_CHILD(o, ZLX_RBTREE_RIGHT) != NODE_NULL_REF) {
         ds = path->sides[od - 1];
-        d = FNAME(np)(path, ds);
+        d = FNAME(np)(path, ds CALL_CTX);
         // now must delete d which has at most 1 non-null child
         dd = path->depth;
         tl = GET_CHILD(o, ZLX_RBTREE_LEFT);
@@ -356,7 +480,7 @@ FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS
         return;
     }
 
-    // d is black and has no children (if c is black and its sibling is NULL 
+    // d is black and has no children (if c is black and its sibling is NULL
     // then it must be NULL itself)
     SET_CHILD(p, ds, NODE_NULL_REF);
 
@@ -379,7 +503,7 @@ FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS
             ++pd;
             s = sl; /* new s is black */
         } else { // s is black
-            if (IS_BLACK(p) && 
+            if (IS_BLACK(p) &&
                 IS_BLACK_SAFE(GET_CHILD(s, ZLX_RBTREE_LEFT)) &&
                 IS_BLACK_SAFE(GET_CHILD(s, ZLX_RBTREE_RIGHT))) {
                 /* del case 3 */
@@ -421,18 +545,30 @@ FDP void FNAME(delete) (PATH_T * ZLX_RESTRICT path) FDS
 }
 
 #if _DEBUG
-FDP void FNAME(dbg_print) (NODE_REF_T n, int depth, char * pfx) FDS {
+FDP void CALL_CONV FNAME(dbg_print)
+    (
+        NODE_REF_T n,
+        int depth,
+        char * pfx
+        DECL_CTX
+    ) FDS
+{
     if (n == NODE_NULL_REF) return;
-    printf("%.*s - %s: "NODE_FMT" (%s)\n", depth * 2, 
+    printf("%.*s - %s: "NODE_FMT" (%s)\n", depth * 2,
            "                                                                ",
            pfx, NODE_PRINT_ARG(n), IS_RED(n) ? "red" : "black");
     if (GET_CHILD(n, ZLX_RBTREE_LEFT) != NODE_NULL_REF)
-        FNAME(dbg_print)(GET_CHILD(n, ZLX_RBTREE_LEFT), depth + 1, "left");
+        FNAME(dbg_print)(GET_CHILD(n, ZLX_RBTREE_LEFT), depth + 1, "left" CALL_CTX);
     if (GET_CHILD(n, ZLX_RBTREE_RIGHT) != NODE_NULL_REF)
-        FNAME(dbg_print)(GET_CHILD(n, ZLX_RBTREE_RIGHT), depth + 1, "right");
+        FNAME(dbg_print)(GET_CHILD(n, ZLX_RBTREE_RIGHT), depth + 1, "right" CALL_CTX);
 }
 
-FDP void FNAME(dbg_print_path) (PATH_T * ZLX_RESTRICT path) FDS {
+FDP void CALL_CONV FNAME(dbg_print_path)
+    (
+        PATH_T * ZLX_RESTRICT path
+        DECL_CTX
+    ) FDS
+{
     unsigned int i;
     printf("[");
     for (i = 1; i <= path->depth; ++i)
@@ -445,6 +581,8 @@ FDP void FNAME(dbg_print_path) (PATH_T * ZLX_RESTRICT path) FDS {
 
 #undef IS_RED
 #undef IS_BLACK
+#undef IS_RED_SAFE
+#undef IS_BLACK_SAFE
 
 #endif
 
@@ -458,4 +596,11 @@ FDP void FNAME(dbg_print_path) (PATH_T * ZLX_RESTRICT path) FDS {
 #undef SET_CHILD
 #undef GET_COLOR
 #undef SET_COLOR
-
+#undef CALL_CTX
+#undef DECL_CTX
+#undef UNUSED_CTX
+#undef KCMP
+#undef NODE_NULL_REF
+#undef NODE_FMT
+#undef NODE_PRINT_ARG
+#undef FNAME
