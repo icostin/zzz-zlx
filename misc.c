@@ -10,3 +10,6 @@ ZLX_API char const * const zlx_lib_name = "zlx"
     "-" ZLX_TARGET
     "-" ZLX_COMPILER;
 
+ZLX_API void (* zlx_abort)() = NULL;
+
+

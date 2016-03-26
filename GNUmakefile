@@ -2,12 +2,12 @@ projects := zlx zlxstest zlxdtest
 
 zlx_prod := slib dlib
 
-zlx_csrc := stdarray.c misc.c
+zlx_csrc := $(sort $(wildcard *.c) ucw8.c)
 zlx_chdr := zlx.h $(wildcard zlx/*.h)
 zlxstest_csrc := test.c
 zlxdtest_csrc := test.c
 
-# xxx_cflags (1: prj, 2: prod, 3: cfg, 4: bld, 5: src, 6:flags='cflags')
+# xxx_cflags (1: prj, 2: prod, 3: cfg, 4: bld, 5: src)
 zlx_cflags = -DZLX_TARGET='"$($4_target)"' -DZLX_CONFIG='"$3"' -DZLX_COMPILER='"$($4_compiler)"'
 zlx_slib_cflags := -DZLX_STATIC
 zlx_dlib_cflags := -DZLX_DYNAMIC
@@ -25,3 +25,8 @@ zlxdtest_idep := zlx_dlib
 
 include icobld.mk
 
+ucw8.c: cw.rb UnicodeData.txt EastAsianWidth.txt
+	ruby cw.rb UnicodeData.txt EastAsianWidth.txt 8 > $@
+
+UnicodeData.txt EastAsianWidth.txt:
+	wget -O$@ ftp://ftp.unicode.org/Public/UNIDATA/$@

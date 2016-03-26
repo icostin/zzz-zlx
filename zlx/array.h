@@ -1,4 +1,5 @@
 #include "base.h"
+#include "memalloc.h"
 
 #ifndef T
 #error T must be defined to represent the item type
@@ -13,7 +14,11 @@
 #endif
 
 #ifndef EQU
-#define EQU(_1, _2) ((CMP((_1), (_2)) == 0)
+#define EQU(_1, _2) ((_1) == (_2))
+#endif
+
+#ifndef COPY
+#define COPY(_d, _s) (_d) = (_s)
 #endif
 
 #ifndef FDP
@@ -24,11 +29,52 @@
 #define FDS
 #endif
 
+#ifndef ZERO
+#define ZERO ((T) 0)
+#endif
 
 FDP void F(set) (T * arr, size_t n, T val) FDS;
+FDP void F(copy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b, size_t n) FDS;
+FDP T * F(zcopy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b) FDS;
+
 FDP int F(cmp) (T const * a, T const * b, size_t n) FDS;
+FDP T * F(scan) (T const * arr, T value) FDS;
+FDP T * F(search) (T const * a, T const * end, T value) FDS;
+FDP T * F(insert)
+(
+    T * ZLX_RESTRICT * ZLX_RESTRICT ap,
+    size_t * ZLX_RESTRICT np,
+    size_t * ZLX_RESTRICT mp,
+    size_t p,
+    size_t q,
+    zlx_ma_t * ma
+) FDS;
+
+FDP size_t F(zlen) (T const * ZLX_RESTRICT a) FDS;
+FDP int F(zcmp) (T const * a, T const * b) FDS;
+
 
 #ifdef ZLX_BODY
+FDP void F(copy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b, size_t n) FDS
+{
+    size_t i;
+    for (i = 0; i < n; ++i)
+    {
+        COPY(a[i], b[i]);
+    }
+}
+
+FDP T * F(zcopy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b) FDS
+{
+    size_t i;
+    for (i = 0;; ++i)
+    {
+        COPY(a[i], b[i]);
+        if (EQU(b[i], ZERO)) break;
+    }
+    return a + i;
+}
+
 FDP void F(set) (T * arr, size_t n, T val) FDS
 {
     size_t i;
@@ -46,12 +92,75 @@ FDP int F(cmp) (T const * a, T const * b, size_t n) FDS
     return 0;
 }
 
+FDP T * F(scan) (T const * arr, T value) FDS
+{
+    while (!EQU(*arr, value)) ++arr;
+    return (T *) arr;
+}
+
+FDP size_t F(zlen) (T const * ZLX_RESTRICT a) FDS
+{
+    return F(scan)(a, ZERO) - a;
+}
+
+FDP T * F(search) (T const * a, T const * end, T value) FDS
+{
+    while (a != end && !EQU(*a, value)) ++a;
+    return (T *) a;
+}
+
+FDP T * F(insert)
+(
+    T * ZLX_RESTRICT * ZLX_RESTRICT ap,
+    size_t * ZLX_RESTRICT np,
+    size_t * ZLX_RESTRICT mp,
+    size_t p,
+    size_t q,
+    zlx_ma_t * ZLX_RESTRICT ma
+) FDS
+{
+    T * a;
+    size_t n, m, i;
+    n = *np + q;
+    if (n < q) return NULL;
+    if (n > SIZE_MAX / sizeof(T)) return NULL;
+    if (n > *mp)
+    {
+        m = ((size_t) 1 << zlx_size_log2_ceil(n * sizeof(T))) / sizeof(T);
+        a = zlx_realloc(ma, *ap, *mp * sizeof(T), m * sizeof(T));
+        if (!a) return NULL;
+        *ap = a;
+        *mp = m;
+    }
+    else a = *ap;
+    for (i = *np; i > p; )
+    {
+        --i;
+        COPY(a[i + q], a[i]);
+    }
+    *np = n;
+    return a + p;
+}
+
+FDP int F(zcmp) (T const * a, T const * b) FDS
+{
+    for (;; ++a, ++b)
+    {
+        int c;
+        c = CMP(*a, *b);
+        if (c) return c;
+        if (EQU(*a, ZERO)) return 0;
+    }
+}
+
 #endif /* ZLX_BODY */
 
 #undef FDP
 #undef FDS
 #undef CMP
 #undef EQU
+#undef COPY
+#undef ZERO
 #undef F
 #undef T
 
