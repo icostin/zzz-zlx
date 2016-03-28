@@ -1,31 +1,27 @@
 #include "zlx/thread.h"
 #include "zlx/assert.h"
 
-/* zlx_nosup_thread_xfc *****************************************************/
-ZLX_API zlx_thread_xfc_t zlx_nosup_thread_xfc =
+/* zlx_nosup_mth_xfc ********************************************************/
+ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc =
 {
-    zlx_nosup_thread_create,
-    zlx_nosup_thread_join
-};
-
-/* zlx_nop_mutex_xfc ********************************************************/
-ZLX_API zlx_mutex_xfc_t zlx_nop_mutex_xfc =
-{
-    zlx_nop_mutex_op,
-    zlx_nop_mutex_op,
-    zlx_nop_mutex_op,
-    zlx_nop_mutex_op,
-    1
-};
-
-/* zlx_nosup_cond_xfc *******************************************************/
-ZLX_API zlx_cond_xfc_t zlx_nosup_cond_xfc =
-{
-    zlx_nosup_cond_init,
-    zlx_nop_cond_op,
-    zlx_nop_cond_op,
-    zlx_nop_cond_wait,
-    1
+    {
+        zlx_nosup_thread_create,
+        zlx_nosup_thread_join
+    },
+    {
+        zlx_nop_mutex_op,
+        zlx_nop_mutex_op,
+        zlx_nop_mutex_op,
+        zlx_nop_mutex_op,
+        1
+    },
+    {
+        zlx_nosup_cond_init,
+        zlx_nop_cond_op,
+        zlx_nop_cond_op,
+        zlx_nop_cond_wait,
+        1
+    }
 };
 
 /* zlx_nosup_thread_create **************************************************/

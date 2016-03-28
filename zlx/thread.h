@@ -12,7 +12,7 @@ typedef struct zlx_cond_s zlx_cond_t;
 typedef struct zlx_thread_xfc_s zlx_thread_xfc_t;
 typedef struct zlx_mutex_xfc_s zlx_mutex_xfc_t;
 typedef struct zlx_cond_xfc_s zlx_cond_xfc_t;
-typedef struct zlx_tmc_xfc_s zlx_tmc_xfc_t;
+typedef struct zlx_mth_xfc_s zlx_mth_xfc_t;
 
 enum zlx_thstat_enum
 {
@@ -79,7 +79,7 @@ struct zlx_cond_xfc_s
     size_t size;
 };
 
-struct zlx_tmc_xfc_s
+struct zlx_mth_xfc_s
 {
     zlx_thread_xfc_t thread;
     zlx_mutex_xfc_t mutex;
@@ -108,8 +108,6 @@ ZLX_API void ZLX_CALL zlx_nop_cond_wait
         zlx_mutex_t * mutex_p
     );
 
-ZLX_API zlx_thread_xfc_t zlx_nosup_thread_xfc;
-ZLX_API zlx_mutex_xfc_t zlx_nop_mutex_xfc;
-ZLX_API zlx_cond_xfc_t zlx_nosup_cond_xfc;
+ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc;
 
 #endif /* _ZLX_THREAD_H */
