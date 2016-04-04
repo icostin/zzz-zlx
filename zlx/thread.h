@@ -41,6 +41,7 @@ struct zlx_thread_xfc_s
             zlx_thread_func_t func,
             void * arg
         );
+
     /*  join  */
     /**
      *  Waits for the given thread to end.
@@ -111,3 +112,4 @@ ZLX_API void ZLX_CALL zlx_nop_cond_wait
 ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc;
 
 #endif /* _ZLX_THREAD_H */
+

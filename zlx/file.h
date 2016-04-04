@@ -156,7 +156,6 @@ ZLX_INLINE zlx_file_status_t zlx_close
     return zf->fcls->close(zf, ZLXF_READ | ZLXF_WRITE);
 }
 
-
 ZLX_API zlx_file_t zlx_null_file;
 
 #endif /* _ZLX_FILE_H */

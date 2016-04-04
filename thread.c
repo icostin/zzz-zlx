@@ -13,14 +13,14 @@ ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc =
         zlx_nop_mutex_op,
         zlx_nop_mutex_op,
         zlx_nop_mutex_op,
-        1
+        0
     },
     {
         zlx_nosup_cond_init,
         zlx_nop_cond_op,
         zlx_nop_cond_op,
         zlx_nop_cond_wait,
-        1
+        0
     }
 };
 
