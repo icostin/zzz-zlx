@@ -1,11 +1,13 @@
 #ifndef _ZLX_FILE_H
 #define _ZLX_FILE_H
 
+#include <stdarg.h>
 #include "base.h"
 
 typedef enum zlx_file_status_enum zlx_file_status_t;
 typedef struct zlx_file_s zlx_file_t;
 typedef struct zlx_file_class_s zlx_file_class_t;
+typedef struct zlx_file_writer_ctx_s zlx_file_writer_ctx_t;
 
 #define ZLXF_SET 0
 #define ZLXF_CUR 1
@@ -32,6 +34,10 @@ enum zlx_file_status_enum
     ZLXF_QUOTA_EXHAUSTED,
     ZLXF_SIZE_LIMIT,
     ZLXF_OVERFLOW,
+    ZLXF_FMT_MALFORMED,
+    ZLXF_FMT_WIDTH_ERROR,
+    ZLXF_FMT_WRITE_ERROR,
+    ZLXF_FMT_CONV_ERROR,
     ZLXF_NO_CODE
 };
 
@@ -136,6 +142,29 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_write
     size_t size
 );
 
+struct zlx_file_writer_ctx_s
+{
+    zlx_file_t * file;
+    zlx_file_status_t status;
+    size_t written;
+};
+
+/* zlx_file_writer **********************************************************/
+/**
+ *  @param obj [in, out]
+ *      an initialized instance of #zlx_file_writer_ctx_t
+ *  @param data [in]
+ *      input data
+ *  @param size [in]
+ *      size in bytes of input data
+ */
+ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
+(
+    void * obj,
+    uint8_t const * ZLX_RESTRICT data,
+    size_t size
+);
+
 /* zlx_seek64 ***************************************************************/
 ZLX_INLINE int64_t zlx_seek64
 (
@@ -155,6 +184,22 @@ ZLX_INLINE zlx_file_status_t zlx_close
 {
     return zf->fcls->close(zf, ZLXF_READ | ZLXF_WRITE);
 }
+
+/* zlx_fvprint **************************************************************/
+ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
+(
+    zlx_file_t * ZLX_RESTRICT zf,
+    char const * fmt,
+    va_list va
+);
+
+/* zlx_fprint ***************************************************************/
+ZLX_API ptrdiff_t ZLX_CALL zlx_fprint
+(
+    zlx_file_t * ZLX_RESTRICT zf,
+    char const * fmt,
+    ...
+);
 
 ZLX_API zlx_file_t zlx_null_file;
 

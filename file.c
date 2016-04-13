@@ -1,4 +1,6 @@
 #include "zlx/file.h"
+#include "zlx/fmt.h"
+#include "zlx/unicode.h"
 
 static ptrdiff_t ZLX_CALL null_file_read
 (
@@ -49,7 +51,6 @@ ZLX_API zlx_file_t zlx_null_file =
     ZLXF_READ | ZLXF_WRITE | ZLXF_SEEK
 };
 
-
 /* zlx_read *****************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_read
 (
@@ -87,6 +88,31 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_write
     }
     while (w == -ZLXF_INTERRUPTED);
     return w;
+}
+
+/* zlx_write_full ***********************************************************/
+ZLX_API zlx_file_status_t ZLX_CALL zlx_write_full
+(
+    zlx_file_t * ZLX_RESTRICT zf,
+    void const * ZLX_RESTRICT data,
+    size_t size,
+    size_t * written
+)
+{
+    size_t z;
+    ptrdiff_t r;
+    zlx_file_status_t fs = ZLXF_OK;
+    for (z = 0; z < size; z += r)
+    {
+        r = zlx_write(zf, data, size);
+        if (r < 0) 
+        {
+            fs = (zlx_file_status_t) -r;
+            break;
+        }
+    }
+    if (written) *written = z;
+    return fs;
 }
 
 /* null_file_read ***********************************************************/
@@ -150,4 +176,62 @@ static zlx_file_status_t ZLX_CALL null_file_close
     return ZLXF_OK;
 }
 
+/* zlx_file_writer **********************************************************/
+ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
+(
+    void * obj,
+    uint8_t const * ZLX_RESTRICT data,
+    size_t size
+)
+{
+    zlx_file_writer_ctx_t * ZLX_RESTRICT fwc = obj;
+    zlx_file_t * ZLX_RESTRICT zf = fwc->file;
+    zlx_file_status_t fs;
+    size_t wsize;
+
+    fs = zlx_write_full(zf, data, size, &wsize);
+    fwc->written += wsize;
+    if (fs) 
+    {
+        fwc->status = fs;
+        return -fs;
+    }
+    return size;
+}
+
+/* zlx_fvprint **************************************************************/
+ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
+(
+    zlx_file_t * ZLX_RESTRICT zf,
+    char const * fmt,
+    va_list va
+)
+{
+    zlx_file_writer_ctx_t fwc;
+    unsigned int fmt_status;
+    fwc.file = zf;
+    fwc.status = ZLXF_OK;
+    fwc.written = 0;
+    
+    fmt_status = zlx_vfmt(zlx_file_writer, &fwc, zlx_utf8_term_width, NULL, 
+                          fmt, va);
+    if (fmt_status) return -ZLXF_FMT_MALFORMED + 1 - fmt_status;
+    return (ptrdiff_t) fwc.written;
+}
+
+/* zlx_fprint ***************************************************************/
+ZLX_API ptrdiff_t ZLX_CALL zlx_fprint
+(
+    zlx_file_t * ZLX_RESTRICT zf,
+    char const * fmt,
+    ...
+)
+{
+    va_list va;
+    ptrdiff_t r;
+    va_start(va, fmt);
+    r = zlx_fvprint(zf, fmt, va);
+    va_end(va);
+    return r;
+}
 

@@ -19,8 +19,6 @@
 #undef ZLX_SPARC32
 #undef ZLX_SPARC64
 
-#undef ZLX_LE
-#undef ZLX_BE
 
 #undef ZLX_UNALIGNED_ACCESS
 
@@ -28,12 +26,14 @@
 #define ZLX_IA32 1
 #define ZLX_UNALIGNED_ACCESS 1
 #define ZLX_BITS 32
-#define ZLX_LE 1
+#define ZLX_LITTLE_ENDIAN 1
+#undef ZLX_BIG_ENDIAN
 #elif _M_X64 || _M_AMD64 || __amd64__ || __x86_64
 #define ZLX_AMD64 1
 #define ZLX_UNALIGNED_ACCESS 1
 #define ZLX_BITS 64
-#define ZLX_LE 1
+#define ZLX_LITTLE_ENDIAN 1
+#undef ZLX_BIG_ENDIAN
 #else 
 #define ZLX_UNKNOWN_ARCH 1
 #endif

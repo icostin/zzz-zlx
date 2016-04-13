@@ -19,7 +19,7 @@
  */
 typedef ptrdiff_t (ZLX_CALL * zlx_write_func_t) 
     (
-        void * ZLX_RESTRICT obj,
+        void * obj,
         uint8_t const * ZLX_RESTRICT data,
         size_t size
     );

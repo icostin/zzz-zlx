@@ -221,6 +221,11 @@ ZLX_API int ZLX_CALL zlx_ucp_term_width (uint32_t ucp);
 
 /* zlx_utf8_term_width ******************************************************/
 /**
+ *  @param obj [unused]
+ *  @param data [in]
+ *      printable UTF8 string
+ *  @param size [in]
+ *      size of UTF8 data in bytes
  *  @returns 
  *      width in terminal character cells of the given text or a negative
  *      number for errors
