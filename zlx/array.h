@@ -1,6 +1,11 @@
 #include "base.h"
 #include "memalloc.h"
 
+/** @defgroup array Array generator.
+ *  Defines and implements arrays of arbitrary types based on other macros
+ *  to do operations on elements.
+ *  @{ */
+
 #ifndef T
 #error T must be defined to represent the item type
 #endif
@@ -163,4 +168,6 @@ FDP int F(zcmp) (T const * a, T const * b) FDS
 #undef ZERO
 #undef F
 #undef T
+
+/** @} */
 

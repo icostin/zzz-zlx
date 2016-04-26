@@ -39,16 +39,17 @@
  *  
  *  Notes: ISC license (functionally equivalent to simplified BSD and MIT/Expat)
  */
-/** @defgroup zlx Zalmoxis
- *  Freestanding utility library.
- *  @{
- */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "zlx/arch.h"
 #include "zlx/base.h"
+
+/** @defgroup misc Miscellaneous
+ *  Freestanding utility library.
+ *  @{
+ */
 
 /* zlx_lib_name *************************************************************/
 /**
@@ -57,6 +58,9 @@ extern "C" {
  *      "zlx-<static|dynamic>-<release|checked|debug>-<arch>-<kernel>-<os/environment>-<compiler_id>"
  */
 extern ZLX_API char const * const zlx_lib_name;
+
+/** @} */
+
 
 #include "zlx/dlist.h"
 #include "zlx/stdarray.h"
@@ -75,8 +79,6 @@ extern ZLX_API char const * const zlx_lib_name;
 #ifdef __cplusplus
 }
 #endif
-
-/** @} */
 
 #endif /* _ZLX_H */
 

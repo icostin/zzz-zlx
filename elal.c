@@ -31,6 +31,25 @@ ZLX_API unsigned int ZLX_CALL zlx_elal_init
     return 0;
 }
 
+/* zlx_elal_finish **********************************************************/
+ZLX_API void ZLX_CALL zlx_elal_finish
+(
+    zlx_elal_t * ZLX_RESTRICT ea
+)
+{
+    void * * cp;
+    void * c;
+
+    if (ea->mutex_allocated) ea->mutex_xfc->finish(ea->mutex);
+    c = ea->chain;
+    while (c)
+    {
+        cp = c;
+        c = *cp;
+        zlx_free(ea->ma, cp, ea->elem_size);
+    }
+}
+
 /* zlxi_elal_alloc **********************************************************/
 ZLX_API void * ZLX_CALL zlxi_elal_alloc
 (

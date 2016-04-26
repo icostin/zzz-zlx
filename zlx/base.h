@@ -1,6 +1,9 @@
 #ifndef _ZLX_BASE_H
 #define _ZLX_BASE_H
 
+/** @addtogroup zlx 
+ *  @{ */
+
 #include <limits.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -20,11 +23,19 @@ typedef   signed __int64  int64_t;
 #include <stdint.h>
 #endif
 
+/*  ZLX_INLINE  */
+/**
+ *  compiler-specific declaration for "inline" declaration attribute
+ */
 #define ZLX_INLINE static __inline
 
 #if _WIN32 && !_WIN64
 #define ZLX_CALL __fastcall
 #else
+/*  ZLX_CALL  */
+/**
+ *  calling convention used by this library
+ */
 #define ZLX_CALL
 #endif
 
@@ -36,6 +47,11 @@ typedef   signed __int64  int64_t;
 #   elif __GNUC__ >= 3
 #       define ZLX_RESTRICT __restrict__
 #   else
+/*  ZLX_RESTRICT  */
+/**
+ *  expands to compiler-specific "restrict" keyword as defined in the C99 
+ *  standard
+ */
 #       define ZLX_RESTRICT
 #   endif
 #endif
@@ -59,6 +75,13 @@ typedef   signed __int64  int64_t;
 #elif ZLX_DYNAMIC
 #define ZLX_API ZLX_LIB_EXPORT
 #else
+/*  ZLX_API  */
+/**
+ *  Declaration for exported variables and functions.
+ *  When building the library this expands to whatever declaration specifier
+ *  to signify exporting, otherwise expands to the counter-specifier signifying
+ *  importing.
+ */
 #define ZLX_API ZLX_LIB_IMPORT
 #endif
 
@@ -90,25 +113,52 @@ typedef   signed __int64  int64_t;
 #define ZLX_TP2(_1, _2) ZLX_TP2D(_1, _2)
 
 
+/*  ZLX_FIELD_OFS  */
+/**
+ *  macro returning the offset to a given field.
+ */
 #define ZLX_FIELD_OFS(_type, _field) \
     ((uintptr_t) &(((_type *) 0)->_field))
 
+/*  ZLX_FIELD_END_OFS  */
+/**
+ *  macro returning the offset past a given field.
+ */
 #define ZLX_FIELD_END_OFS(_type, _field) \
     (ZLX_FIELD_OFS(_type, _field) + sizeof((((_type *) 0)->_field)))
 
+/*  ZLX_STRUCT_FROM_FIELD  */
+/**
+ *  macro that takes a pointer to a structure field and gives the pointer to
+ *  the structure containing it.
+ */
 #define ZLX_STRUCT_FROM_FIELD(_type, _field, _field_ptr) \
     ((_type *) ((uintptr_t) (_field_ptr) - ZLX_FIELD_OFS(_type, _field)))
 
+/*  ZLX_ITEM_COUNT  */
+/**
+ *  macro that returns the number of items in an array whose size is declared
+ *  at compile time.
+ */
 #define ZLX_ITEM_COUNT(_a) (sizeof(_a) / sizeof(_a[0]))
 
 #if _DEBUG
 #define ZLX_ON_DEBUG(_expr) _expr
 #else
+/*  ZLX_ON_DEBUG  */
+/**
+ *  macro that evaluates the given expression only on debug builds.
+ */
 #define ZLX_ON_DEBUG(_expr)
 #endif
 
 
 
+/* zlx_u8_log2_ceil *********************************************************/
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  8-bit unsigned int.
+ */
 ZLX_INLINE uint8_t zlx_u8_log2_ceil (uint8_t x)
 {
     return x <= 0x10
@@ -118,6 +168,11 @@ ZLX_INLINE uint8_t zlx_u8_log2_ceil (uint8_t x)
         : (x <= 0x40 ? 5 + (x > 0x20) : 7 + (x > 0x80));
 }
 
+/* zlx_u16_log2_ceil ********************************************************/
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  16-bit unsigned int.
+ */
 ZLX_INLINE uint8_t zlx_u16_log2_ceil (uint16_t x)
 {
     return x == (uint8_t) x 
@@ -125,6 +180,11 @@ ZLX_INLINE uint8_t zlx_u16_log2_ceil (uint16_t x)
         : 8 + zlx_u8_log2_ceil((uint8_t) (x >> 8));
 }
 
+/* zlx_u32_log2_ceil ********************************************************/
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  32-bit unsigned int.
+ */
 ZLX_INLINE uint8_t zlx_u32_log2_ceil (uint32_t x)
 {
     return x == (uint16_t) x 
@@ -132,6 +192,11 @@ ZLX_INLINE uint8_t zlx_u32_log2_ceil (uint32_t x)
         : 16 + zlx_u16_log2_ceil((uint16_t) (x >> 16));
 }
 
+/* zlx_u64_log2_ceil ********************************************************/
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  64-bit unsigned int.
+ */
 ZLX_INLINE uint8_t zlx_u64_log2_ceil (uint64_t x)
 {
     return x == (uint32_t) x 
@@ -143,22 +208,50 @@ ZLX_INLINE uint8_t zlx_u64_log2_ceil (uint64_t x)
 #define zlx_size_log2_ceil zlx_u64_log2_ceil
 #define zlx_uptr_log2_ceil zlx_u64_log2_ceil
 #else
+/*  zlx_size_log2_ceil  */
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  size_t unsigned int.
+ */
 #define zlx_size_log2_ceil zlx_u32_log2_ceil
+
+/* zlx_uptr_log2_ceil */
+/**
+ *  Computes the smallest power of 2 that is greater or equal to the given 
+ *  pointer-sized unsigned int.
+ */
 #define zlx_uptr_log2_ceil zlx_u32_log2_ceil
 #endif
 
-
+/* zlx_seqbswap16 ***********************************************************/
+/**
+ *  Sequential 16-bit byte-swap.
+ *  This function computes the byte-swap value by shifting each byte from the
+ *  input value to its final bit location.
+ */
 ZLX_INLINE uint16_t zlx_seqbswap16 (uint16_t v)
 {
     return ((uint16_t) ((uint8_t) v) << 8) | (v >> 8);
 }
 
+/* zlx_seqbswap32 ***********************************************************/
+/**
+ *  Sequential 32-bit byte-swap.
+ *  This function computes the byte-swap value by shifting each byte from the
+ *  input value to its final bit location.
+ */
 ZLX_INLINE uint32_t zlx_seqbswap32 (uint32_t v)
 {
     return ((uint32_t) ((uint8_t) v) << 24) | ((v & 0xFF00) << 8)
         | ((v >> 8) & 0xFF00) | (v >> 24);
 }
 
+/* zlx_seqbswap64 ***********************************************************/
+/**
+ *  Sequential 32-bit byte-swap.
+ *  This function computes the byte-swap value by shifting each byte from the
+ *  input value to its final bit location.
+ */
 ZLX_INLINE uint64_t zlx_seqbswap64 (uint64_t v)
 {
     return ((uint64_t) ((uint8_t) v) << 56) | ((v & 0xFF00) << 40)
@@ -172,8 +265,25 @@ ZLX_INLINE uint64_t zlx_seqbswap64 (uint64_t v)
 #define ZLX_BSWAP32(_v) (__builtin_bswap32(_v))
 #define ZLX_BSWAP64(_v) (__builtin_bswap64(_v))
 #else
+/*  ZLX_BSWAP16  */
+/**
+ *  16-bit byte-swap.
+ *  This macro expands to the fastest available function for byte-swapping.
+ */
 #define ZLX_BSWAP16(_v) (zlx_seqbswap16((_v)))
+
+/*  ZLX_BSWAP32  */
+/**
+ *  32-bit byte-swap.
+ *  This macro expands to the fastest available function for byte-swapping.
+ */
 #define ZLX_BSWAP32(_v) (zlx_seqbswap32((_v)))
+
+/*  ZLX_BSWAP64  */
+/**
+ *  64-bit byte-swap.
+ *  This macro expands to the fastest available function for byte-swapping.
+ */
 #define ZLX_BSWAP64(_v) (zlx_seqbswap64((_v)))
 #endif
 
@@ -473,6 +583,7 @@ ZLX_INLINE void zlx_seqwrite_u64be (void * p, uint64_t v)
 #endif
 #endif
 
+/** @} */
 
 #endif
 

@@ -1,12 +1,18 @@
 #ifndef _ZLX_ELEMENT_LOOKASIDE_LIST_H
 #define _ZLX_ELEMENT_LOOKASIDE_LIST_H
 
+/** @addtogroup elal Element lookaside list allocator
+ *  @{ */
 /* implements a look-aside list for element allocation */
 
 #include "base.h"
 #include "memalloc.h"
 #include "thread.h"
 
+/*, (_elem)  zlx_elal_t  */
+/**
+ *  Element look-aside list instance structure.
+ */
 typedef struct zlx_elal_s zlx_elal_t;
 struct zlx_elal_s
 {
@@ -29,6 +35,16 @@ struct zlx_elal_s
  *      mem allocator
  *  @param mutex_xfc [in, opt]
  *      mutex interface; if NULL a dummy interface will be used
+ *  @param mutex [in, opt]
+ *      mutex to be used to lock/unlock around performing the operations;
+ *      if this is NULL, a new mutex is allocated (using the given memory
+ *      allocator) and initialized
+ *  @param elem_size [in]
+ *      element size
+ *  @param max_chain_len [in]
+ *      max number of items to store in the lookaside list
+ *  @retval 0 init ok
+ *  @retval 1 failed to allocate mutex
  */
 ZLX_API unsigned int ZLX_CALL zlx_elal_init
 (
@@ -38,6 +54,15 @@ ZLX_API unsigned int ZLX_CALL zlx_elal_init
     zlx_mutex_t * mutex,
     size_t elem_size,
     uint32_t max_chain_len
+);
+
+/* zlx_elal_finish **********************************************************/
+/**
+ *  Frees all resources held by the lookaside list.
+ */
+ZLX_API void ZLX_CALL zlx_elal_finish
+(
+    zlx_elal_t * ZLX_RESTRICT ea
 );
 
 ZLX_API void * ZLX_CALL zlxi_elal_alloc
@@ -84,14 +109,33 @@ ZLX_INLINE void zlxd_elal_free
 
 #if _DEBUG
 #define zlx_elal_alloc(_ea, _info) (zlxd_elal_alloc((_ea), __FILE__, __LINE__, __FUNCTION__, (_info)))
-#define zlx_elal_free(_ea) (zlxd_elal_free((_ea), __FILE__, __LINE__, __FUNCTION__))
+#define zlx_elal_free(_ea, _elem) (zlxd_elal_free((_ea), (_elem), __FILE__, __LINE__, __FUNCTION__))
 #elif _CHECKED
 #define zlx_elal_alloc(_ea, _info) (zlxd_elal_alloc((_ea), NULL, 0, NULL, NULL))
-#define zlx_elal_free(_ea) (zlxd_elal_free((_ea), NULL, 0, NULL))
+#define zlx_elal_free(_ea, _elem) (zlxd_elal_free((_ea), (_elem), NULL, 0, NULL))
 #else
+/* zlx_elal_alloc ***********************************************************/
+/**
+ *  Allocates one element.
+ *  @param ea [in]
+ *      instance of the initialized lookaside list
+ *  @returns address of the element or NULL on error
+ */
 #define zlx_elal_alloc(_ea, _info) (zlxi_elal_alloc((_ea)))
-#define zlx_elal_free(_ea, _info) (zlxi_elal_free((_ea)))
+
+/* zlx_elal_free ************************************************************/
+/**
+ *  Frees the element.
+ *  @param ea [in]
+ *      instance of the initialized lookaside list
+ *  @param elem [in]
+ *      element to free
+ */
+#define zlx_elal_free(_ea, _elem) (zlxi_elal_free((_ea), (_elem)))
+
 #endif
+
+/** @} */
 
 #endif /* _ZLX_ELEMENT_LOOKASIDE_LIST_H */
 
