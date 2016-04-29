@@ -37,7 +37,8 @@
  *  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *  
- *  Notes: ISC license (functionally equivalent to simplified BSD and MIT/Expat)
+ *  Note: ISC license (functionally equivalent to simplified BSD and MIT/Expat)
+ *
  */
 #ifdef __cplusplus
 extern "C" {
