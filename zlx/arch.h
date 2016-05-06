@@ -2,7 +2,8 @@
 #define _ZLX_ARCH_H
 
 /** @defgroup arch Architecture
- *  Defines macros that describe the target architecture:
+ *  Defines macros that describe the target architecture.
+ *  Macros potentially defined:
  *  - #ZLX_BITS
  *  - #ZLX_UNALIGNED_ACCESS
  *  - #ZLX_LITTLE_ENDIAN

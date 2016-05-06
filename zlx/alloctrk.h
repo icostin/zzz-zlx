@@ -22,14 +22,23 @@ ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_create
 /* zlx_alloctrk_destroy *****************************************************/
 /**
  *  Destroys the tracker instance.
+ *  @param ma [in, out]
+ *      allocator instance to deallocate.
  *  @returns backing allocator for the tracker that was passed during
- *      zlx_alloctrk_realloc().
+ *      zlx_alloctrk_create().
  */
 ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_destroy
 (
     zlx_ma_t * ma
 );
 
+/* zlx_alloctrk_dump ********************************************************/
+/**
+ *  Dumps to #zlx_log as fault-level messages all blocks allocated through
+ *  the given tracker allocator.
+ *  @param ma [in]
+ *      tracker allocator instance
+ */
 ZLX_API void ZLX_CALL zlx_alloctrk_dump
 (
     zlx_ma_t * ma

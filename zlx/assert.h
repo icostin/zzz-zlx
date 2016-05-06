@@ -4,7 +4,7 @@
 #include "base.h"
 #include "log.h"
 
-/** @defgroup assert Assertion
+/** @defgroup assert Assert
  *  Support for assertions.
  *
  *  The library is designed to support 3 major build configurations:

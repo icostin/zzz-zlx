@@ -4,6 +4,10 @@
 #include "base.h"
 #include "writer.h"
 
+/** @defgroup fmt Formatted printing
+ *  @{
+ */
+
 ZLX_API char const zlx_digit_char_table[37];
 
 /* zlx_digit_from_char ******************************************************/
@@ -105,6 +109,7 @@ ZLX_API size_t ZLX_CALL zlx_i64_to_str
 
 #define ZLX_U64_STOP 1 /**< non-digit encountered */
 #define ZLX_U64_OVERFLOW 2 /**< number parsed exceeds uint64_t capacity */
+
 /* zlx_u64_from_str *********************************************************/
 /**
  *  Converts a string to unsigned int.
@@ -188,7 +193,7 @@ ZLX_API unsigned int ZLX_CALL zlx_vfmt
 /* zlx_fmt ******************************************************************/
 /**
  *  Writes formatted UTF-8 text.
- *  See zlx_write_vfmt.
+ *  See zlx_vfmt.
  */
 ZLX_API unsigned int ZLX_CALL zlx_fmt
 (
@@ -199,6 +204,8 @@ ZLX_API unsigned int ZLX_CALL zlx_fmt
     char const * fmt,
     ...
 );
+
+/** @} */
 
 #endif
 

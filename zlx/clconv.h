@@ -3,6 +3,11 @@
 
 #include "base.h"
 
+/** @defgroup clconv Chunked linear convertor
+ *  This component defines a common interface for linear convertors of byte
+ *  streams.
+ *  @{ */
+
 #define ZLX_CLCONV_OK 0
 /**< entire input used (return code for #zlx_clconv_func_t) */
 
@@ -160,5 +165,6 @@ ZLX_API uint_fast8_t ZLX_CALL zlx_clconv_c_escape
     void * ctx
 );
 
+/** @} */
 
 #endif /* _ZLX_CLCONV_H */

@@ -1,9 +1,29 @@
 #include "base.h"
 #include "memalloc.h"
 
-/** @defgroup array Array generator.
+/** @defgroup array Array generator
  *  Defines and implements arrays of arbitrary types based on other macros
  *  to do operations on elements.
+ *
+ *  The typical use of this component:
+ *  - in a header file, define macros that describe the item and help 
+ *    declare generated functions then include "zlx/array.h" to generate 
+ *    the header declarations
+ *  - in a C source file define the same macros as above, define ZLX_BODY
+ *    and include again "zlx/array.h" to generate function bodies.
+ *
+ *  Macros that affect the generated source:
+ *  - T: item type
+ *  - F(n): function name decorator
+ *  - CMP: macro to compare two items, returning 0 for equal, -1 or +1 for
+ *    less or more
+ *  - EQU: macro that compares two items returning non-zero if items are equal
+ *    and 0 if not
+ *  - COPY: macro that copies one item
+ *  - FDP: function decorator prefix
+ *  - FDS: function decorator suffix
+ *  - ZERO: macro representing a "zero" item
+ *
  *  @{ */
 
 #ifndef T

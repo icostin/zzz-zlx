@@ -1,7 +1,9 @@
 #ifndef _ZLX_BASE_H
 #define _ZLX_BASE_H
 
-/** @addtogroup zlx 
+/** @defgroup base Zalmoxis base declarations
+ *  Basic macros and types are made available through this component.
+ *
  *  @{ */
 
 #include <limits.h>

@@ -25,7 +25,7 @@ ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc =
 };
 
 /* zlx_nosup_thread_create **************************************************/
-ZLX_API unsigned int ZLX_CALL zlx_nosup_thread_create
+ZLX_API zlx_mth_status_t ZLX_CALL zlx_nosup_thread_create
     (
         zlx_tid_t * tid_p,
         zlx_thread_func_t func,
@@ -33,11 +33,11 @@ ZLX_API unsigned int ZLX_CALL zlx_nosup_thread_create
     )
 {
     (void) tid_p, (void) func, (void) arg;
-    return ZLX_THSTAT_NO_SUP;
+    return ZLX_MTH_NO_SUP;
 }
 
 /* zlx_nosup_thread_join ****************************************************/
-ZLX_API unsigned int ZLX_CALL zlx_nosup_thread_join
+ZLX_API zlx_mth_status_t ZLX_CALL zlx_nosup_thread_join
     (
         zlx_tid_t tid,
         uint8_t * ret_val_p
@@ -45,7 +45,7 @@ ZLX_API unsigned int ZLX_CALL zlx_nosup_thread_join
 {
     (void) tid;
     (void) ret_val_p;
-    return ZLX_THSTAT_NO_SUP;
+    return ZLX_MTH_NO_SUP;
 }
 
 /* zlx_nop_mutex_op *********************************************************/
@@ -55,10 +55,10 @@ ZLX_API void ZLX_CALL zlx_nop_mutex_op (zlx_mutex_t * mutex_p)
 }
 
 /* zlx_nosup_cond_init ******************************************************/
-ZLX_API zlx_thstat_t ZLX_CALL zlx_nosup_cond_init (zlx_cond_t * cond_p)
+ZLX_API zlx_mth_status_t ZLX_CALL zlx_nosup_cond_init (zlx_cond_t * cond_p)
 {
     (void) cond_p;
-    return ZLX_THSTAT_NO_SUP;
+    return ZLX_MTH_NO_SUP;
 }
 
 /* zlx_nop_cond_op **********************************************************/

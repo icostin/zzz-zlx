@@ -3,8 +3,28 @@
 
 #include "base.h"
 
+/* zlx_ma_t *****************************************************************/
+/**
+ *  Memory allocator instance base structure.
+ */
 typedef struct zlx_ma_s zlx_ma_t;
 
+/* zlx_realloc_func_t *******************************************************/
+/**
+ *  Function to allocate, reallocate or free a block of memory.
+ *  @param old_ptr [in]
+ *      pointer of allocated block of memory, or NULL for allocating a new block
+ *  @param old_size [in]
+ *      size of the already allocated block of memory, or 0 for allocating
+ *      a new block
+ *  @param new_size [in]
+ *      new size requested for the block, or 0 for freeing the existent block
+ *  @param ma [in, out]
+ *      memory allocator instance
+ *  @returns 
+ *      the new block or NULL if the block was freed or there was an error
+ *      allocating the block
+ */
 typedef void * (ZLX_CALL * zlx_realloc_func_t) 
     (
         void * old_ptr,
@@ -15,7 +35,15 @@ typedef void * (ZLX_CALL * zlx_realloc_func_t)
 
 struct zlx_ma_s
 {
+    /** Function to do the reallocation. */
     zlx_realloc_func_t realloc;
+    
+    /** Function to store information about an allocated block.
+     *  This is intended to be used by memory tracker allocators to show
+     *  some meaningful information to the programmer about memory leaks.
+     *  A memory allocator that does not track the allocated blocks can
+     *  simply use for this member the function zlx_ma_nop_info_set().
+     */
     void (ZLX_CALL * info_set)
         (
             zlx_ma_t * ZLX_RESTRICT ma,
@@ -25,6 +53,10 @@ struct zlx_ma_s
             char const * func,
             char const * info
         );
+
+    /** Function that validates if the given block has been previously
+     *  allocated by this allocator and not freed since.
+     */
     void (ZLX_CALL * check)
         (
             zlx_ma_t * ZLX_RESTRICT ma,
@@ -123,6 +155,17 @@ ZLX_INLINE void zlxi_free
 #define zlx_free(_ma, _ptr, _size) \
     (zlxi_free((_ma), (_ptr), (_size), __FILE__, __LINE__, __FUNCTION__))
 #else
+/*  zlx_alloc  */
+/**
+ *  Allocates a memory block.
+ *  @param _ma [in, out]
+ *      a pointer to a zlx_ma_t structure
+ *  @param _size [in]
+ *      size for the requested block
+ *  @param _info [in]
+ *      string evaluated only on debug builds that gives a hint to the 
+ *      programmer for what the memory block is indended for
+ */
 #define zlx_alloc(_ma, _size, _info) (zlxi_alloc((_ma), (_size)))
 #define zlx_realloc(_ma, _old_ptr, _old_size, _new_size) \
     (zlxi_realloc((_ma), (_old_ptr), (_old_size), (_new_size)))

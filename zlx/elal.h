@@ -1,18 +1,17 @@
 #ifndef _ZLX_ELEMENT_LOOKASIDE_LIST_H
 #define _ZLX_ELEMENT_LOOKASIDE_LIST_H
 
-/** @addtogroup elal Element lookaside list allocator
- *  @{ */
-/* implements a look-aside list for element allocation */
+/** @defgroup elal Element lookaside list allocator
+ *  Implements a look-aside list for element allocation
+ */
+/** @{ */
 
 #include "base.h"
 #include "memalloc.h"
 #include "thread.h"
 
-/*, (_elem)  zlx_elal_t  */
-/**
- *  Element look-aside list instance structure.
- */
+/* zlx_elal_t  */
+/** Element look-aside list instance structure.  */
 typedef struct zlx_elal_s zlx_elal_t;
 struct zlx_elal_s
 {
@@ -65,11 +64,19 @@ ZLX_API void ZLX_CALL zlx_elal_finish
     zlx_elal_t * ZLX_RESTRICT ea
 );
 
+/* zlxi_elal_alloc **********************************************************/
+/**
+ *  Internal allocation function.
+ */
 ZLX_API void * ZLX_CALL zlxi_elal_alloc
 (
     zlx_elal_t * ZLX_RESTRICT ea
 );
 
+/* zlxi_elal_free ***********************************************************/
+/**
+ *  Internal free function.
+ */
 ZLX_API void ZLX_CALL zlxi_elal_free
 (
     zlx_elal_t * ZLX_RESTRICT ea,
