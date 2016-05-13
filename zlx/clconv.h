@@ -114,11 +114,15 @@ ZLX_API uint_fast8_t ZLX_CALL zlx_clconv_bin_to_hex_line
  *      will be filled in with length of output produced
  *  @param ctx
  *      NULL
- *  @warning This does not produce strings conforming to the C standard;
- *      AB34 will be converted to "\\xAB4" which according to C is a 1 char
- *      string (or invalid literal when char has under 12 bits).
+ *  @warning 
+ *      This does not produce strings literals conforming to the C standard;
+ *      AB 34 35 will be converted to "\\xAB45" which according to C is a 1 char
+ *      string (or invalid literal when char has under 16 bits).
  *      This is the same way python is understanding literals (\\x is always
- *      followed by exactly to hex digits)
+ *      followed by exactly two hex digits). 
+ *  @note
+ *      For obtaining guaranteed valid C string literals one can use the
+ *      function zlx_clconv_c_escape().
  */
 ZLX_API uint_fast8_t ZLX_CALL zlx_clconv_c_escape_force_hex
 (

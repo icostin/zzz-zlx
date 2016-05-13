@@ -2,6 +2,7 @@
 #define _ZLX_THREAD_H
 
 #include "base.h"
+#include "memalloc.h"
 
 /*  zlx_mth_status_t  */
 /**
@@ -211,6 +212,188 @@ ZLX_API void ZLX_CALL zlx_nop_cond_wait
  *  variable interfaces but preventing the component to create such resources.
  */
 ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc;
+
+/*  zlxi_mutex_create  */
+/**
+ *  Internal function to allocate and initialize a mutex.
+ */
+ZLX_INLINE zlx_mutex_t * zlxi_mutex_create
+(
+    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_mutex_xfc_t * ZLX_RESTRICT mx
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+    , char const * info
+#endif
+)
+{
+    zlx_mutex_t * m = zlx_alloc(ma, mx->size, "mutex");
+    if (!m) return NULL;
+#if _DEBUG
+    if (m) ma->info_set(ma, m, src, line, func, info);
+#endif
+    mx->init(m);
+    return m;
+}
+
+/*  zlx_mutex_create  */
+#if _DEBUG
+#define zlx_mutex_create(_ma, _mx, _info) \
+    (zlxi_mutex_create((_ma), (_mx), __FILE__, __LINE__, __FUNCTION__, (_info)))
+#else
+/**
+ *  Allocates and initializes a mutex.
+ */
+#define zlx_mutex_create(_ma, _mx, _info) (zlxi_mutex_create((_ma), (_mx)))
+#endif
+
+/*  zlxi_mutex_destroy  */
+/**
+ *  Internal function to uninitialize and deallocate a mutex.
+ */
+ZLX_INLINE void zlxi_mutex_destroy
+(
+    zlx_mutex_t * ZLX_RESTRICT m,
+    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_mutex_xfc_t * ZLX_RESTRICT mx
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+#endif
+)
+{
+#if _DEBUG || _CHECKED
+    ma->check(ma, m, mx->size, 
+#if _DEBUG
+              src, line, func
+#else
+              NULL, 0, NULL
+#endif
+             );
+#endif
+    mx->finish(m);
+    zlx_free(ma, m, mx->size);
+}
+
+/* zlx_mutex_destroy */
+#if _DEBUG
+#define zlx_mutex_destroy(_mutex, _ma, _mx) \
+    (zlxi_mutex_destroy((_mutex), (_ma), (_mx), \
+                        __FILE__, __LINE__, __FUNCTION__))
+#else
+/**
+ *  Uninitializes and deallocates a mutex.
+ */
+#define zlx_mutex_destroy(_mutex, _ma, _mx) \
+    (zlxi_mutex_destroy((_mutex), (_ma), (_mx)))
+#endif
+
+/*  zlxi_cond_create  */
+/**
+ *  Allocates and initializes a condition variable.
+ */
+ZLX_INLINE zlx_cond_t * zlxi_cond_create
+(
+    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_cond_xfc_t * ZLX_RESTRICT cx,
+    zlx_mth_status_t * ZLX_RESTRICT status_p
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+    , char const * info
+#endif
+)
+{
+    zlx_cond_t * cond;
+    zlx_mth_status_t ms;
+    cond = zlxi_alloc(ma, cx->size
+#if _DEBUG
+                      , src, line, func, info
+#endif
+                     );
+    if (!cond) ms = ZLX_MTH_NO_MEM;
+    else ms = cx->init(cond);
+    if (ms) 
+    {
+        zlx_free(ma, cond, cx->size);
+        if (status_p) *status_p = ms;
+    }
+    return cond;
+}
+
+/*  zlx_cond_create  */
+#if _DEBUG
+#define zlx_cond_create(_ma, _cx, _status_p, _info) \
+    (zlxi_cond_create((_ma), (_cx), (_status_p), \
+                      __FILE__, __LINE__, __FUNCTION__, (_info)))
+#else
+/**
+ *  Allocates and initializes a condition variable.
+ *  @param _ma [in]
+ *      memory allocator - a pointer to an initialized instance of #zlx_ma_t
+ *  @param _cx [in]
+ *      condition variable interface - a pointer to an initialized 
+ *      interface of type #zlx_cond_xfc_t
+ *  @param _status_p [out, opt]
+ *      variable to receive the error status if the initialization fails;
+ *      this will get #ZLX_MTH_NO_MEM if the allocation fails or some other
+ *      status when the condition variable cannot be initialized; if this
+ *      parameter is NULL then the error is not passed to the caller
+ *  @param _info [in]
+ *      static string that describes the condition variable; this gets evaluated
+ *      only for debug builds
+ *  @returns 
+ *      a pointer to the newly created condition variable or NULL if there was
+ *      an error
+ */
+#define zlx_cond_create(_ma, _cx, _status_p, _info) \
+    (zlxi_cond_create((_ma), (_cx), (_status_p)))
+#endif
+
+/*  zlxi_cond_destroy  */
+/**
+ *  Internal function for uninitializing and freeing a condition variable.
+ */
+ZLX_INLINE void zlxi_cond_destroy
+(
+    zlx_cond_t * ZLX_RESTRICT cond,
+    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_cond_xfc_t * ZLX_RESTRICT cx
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+#endif
+)
+{
+#if _DEBUG || _CHECKED
+    ma->check(ma, cond, cx->size, 
+#if _DEBUG
+              src, line, func
+#else
+              NULL, 0, NULL
+#endif
+             );
+#endif
+    cx->finish(cond);
+    zlx_free(ma, cond, cx->size);
+}
+
+/*  zlx_cond_destroy  */
+#if _DEBUG
+#define zlx_cond_destroy(_cond, _ma, _cx) \
+    (zlxi_cond_destroy((_cond), (_ma), (_cx), __FILE__, __LINE__, __FUNCTION__))
+#else
+/**
+ *  Uninitializes and deallocates a condition variable.
+ */
+#define zlx_cond_destroy(_cond, _ma, _cx) \
+    (zlxi_cond_destroy((_cond), (_ma), (_cx)))
+#endif
 
 #endif /* _ZLX_THREAD_H */
 
