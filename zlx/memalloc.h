@@ -200,5 +200,30 @@ ZLX_API void ZLX_CALL zlx_ma_nop_check
     char const * func
 );
 
+/* ZLX_ARRAY_ALLOC **********************************************************/
+/**
+ *  Macro to allocate an array of items.
+ *  @param _arr [out]
+ *      variable that will be filled with the address of the array of items;
+ *      the size of the items is inferred from the array type
+ *  @param _ma [in, out]
+ *      pointer to memory allocator instance (#zlx_ma_t *)
+ *  @param _count [in]
+ *      number of elements to be allocated
+ *  @param _info [in]
+ *      debug-only static string describing the allocated array
+ */
+#define ZLX_ARRAY_ALLOC(_arr, _ma, _count, _info) \
+    ((_arr) = ((_count) <= SIZE_MAX / sizeof(*(_arr)) \
+               ? zlx_alloc((_ma), (_count) * sizeof(*(_arr)), (_info)) \
+               : NULL))
+
+/* ZLX_ARRAY_FREE ***********************************************************/
+/**
+ *  Macro to free an array of items.
+ */
+#define ZLX_ARRAY_FREE(_arr, _ma, _count) \
+    (zlx_free((_ma), (_arr), (_count) * sizeof(*(_arr))))
+
 #endif /* _ZLX_MEM_ALLOC_H */
 
