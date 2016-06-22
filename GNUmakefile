@@ -2,7 +2,7 @@ projects := zlx zlxstest zlxdtest
 
 zlx_prod := slib dlib
 
-zlx_csrc := $(sort $(wildcard *.c) ucw8.c)
+zlx_csrc := alloctrk.c clconv.c elal.c file.c fmt.c log.c memalloc.c misc.c stdarray.c thread.c ucw8.c unicode.c writer.c
 zlx_chdr := zlx.h $(wildcard zlx/*.h)
 zlxstest_csrc := test.c
 zlxdtest_csrc := test.c
@@ -30,3 +30,4 @@ ucw8.c: cw.rb UnicodeData.txt EastAsianWidth.txt
 
 UnicodeData.txt EastAsianWidth.txt:
 	wget -O$@ ftp://ftp.unicode.org/Public/UNIDATA/$@
+
