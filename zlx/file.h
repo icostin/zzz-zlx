@@ -137,7 +137,8 @@ struct zlx_file_class_s
      *      buffer to fill with data
      *  @param size [in]
      *      amount of data requested
-     *  @returns number of bytes read, which can be less than @a size, or a
+     *  @returns 
+     *      number of bytes read, which can be less than @a size, or a
      *      negative number on error matching a negated #zlx_file_status_t value
      **/
     ptrdiff_t (ZLX_CALL * read)
@@ -196,7 +197,7 @@ struct zlx_file_s
     zlx_file_class_t const * fcls;
 
     /** Flags describing operations supported by this file object.
-     *  This is a bit-mask of a combination of #ZLXF_READ, #ZLXF_WRITE, 
+     *  This is a bit-mask holding a combination of #ZLXF_READ, #ZLXF_WRITE, 
      *  #ZLXF_SEEK, #ZLXF_NONBLOCK. */
     uint32_t flags;
 };
@@ -357,8 +358,8 @@ ZLX_INLINE zlx_file_status_t zlx_close
  *  @param va [in]
  *      var arg with arguments to be formatted
  *  @returns 
- *      number of bytes written on success or one of #ZLXF_FMT_MALFORMED,
- *      #ZLXF_FMT_WIDTH_ERROR, #ZLXF_FMT_WRITE_ERROR, #ZLXF_FMT_CONV_ERROR.
+ *      number of bytes written on success or one of -#ZLXF_FMT_MALFORMED,
+ *      -#ZLXF_FMT_WIDTH_ERROR, -#ZLXF_FMT_WRITE_ERROR, -#ZLXF_FMT_CONV_ERROR.
  *
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
@@ -377,8 +378,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
  *  @param fmt [in]
  *      format string; see zlx_vfmt()
  *  @returns 
- *      number of bytes written on success or one of #ZLXF_FMT_MALFORMED,
- *      #ZLXF_FMT_WIDTH_ERROR, #ZLXF_FMT_WRITE_ERROR, #ZLXF_FMT_CONV_ERROR.
+ *      number of bytes written on success or one of -#ZLXF_FMT_MALFORMED,
+ *      -#ZLXF_FMT_WIDTH_ERROR, -#ZLXF_FMT_WRITE_ERROR, -#ZLXF_FMT_CONV_ERROR.
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_fprint
 (

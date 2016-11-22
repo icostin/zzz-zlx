@@ -28,3 +28,22 @@ FDP void F(set) (T * arr, size_t n, T val) FDS;
 
 FDP int F(cmp) (T const * a, T const * b, size_t n) FDS;
 
+=== zlx dlist ===
+ZLX_INLINE zlx_np_t * zlx_dlist_init (zlx_np_t * list_p);
+ZLX_INLINE int zlx_dlist_is_empty (zlx_np_t * list_p);
+ZLX_INLINE void zlx_dlist_ins
+(
+    zlx_np_t * anchor_p, 
+    zlx_np_t * to_ins_p, 
+    int dir
+);
+ZLX_INLINE void zlx_dlist_extend
+(
+    zlx_np_t * dest,
+    zlx_np_t * src,
+    int dir
+);
+ZLX_INLINE void zlx_dlist_del
+(
+    zlx_np_t * to_del_p
+)
