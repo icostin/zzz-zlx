@@ -15,8 +15,8 @@
  */
 ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_create
 (
-    zlx_ma_t * ma,
-    zlx_log_t * log
+    zlx_ma_t * restrict ma,
+    zlx_log_t * restrict log
 );
 
 /* zlx_alloctrk_destroy *****************************************************/
@@ -40,6 +40,17 @@ ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_destroy
  *      tracker allocator instance
  */
 ZLX_API void ZLX_CALL zlx_alloctrk_dump
+(
+    zlx_ma_t * ma
+);
+
+/* zlx_alloctrk_get_count ***************************************************/
+/**
+ *  Retrives number of currently allocated blocks.
+ *  @param ma [in]
+ *      tracker allocator instance
+ */
+ZLX_API size_t ZLX_CALL zlx_alloctrk_get_count
 (
     zlx_ma_t * ma
 );

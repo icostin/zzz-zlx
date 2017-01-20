@@ -54,8 +54,8 @@ ZLX_API zlx_file_t zlx_null_file =
 /* zlx_read *****************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_read
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void * restrict data,
     size_t size
 )
 {
@@ -74,8 +74,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_read
 /* zlx_write ****************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_write
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void const * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void const * restrict data,
     size_t size
 )
 {
@@ -93,8 +93,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_write
 /* zlx_write_full ***********************************************************/
 ZLX_API zlx_file_status_t ZLX_CALL zlx_write_full
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void const * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void const * restrict data,
     size_t size,
     size_t * written
 )
@@ -180,12 +180,12 @@ static zlx_file_status_t ZLX_CALL null_file_close
 ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
 (
     void * obj,
-    uint8_t const * ZLX_RESTRICT data,
+    uint8_t const * restrict data,
     size_t size
 )
 {
-    zlx_file_writer_ctx_t * ZLX_RESTRICT fwc = obj;
-    zlx_file_t * ZLX_RESTRICT zf = fwc->file;
+    zlx_file_writer_ctx_t * restrict fwc = obj;
+    zlx_file_t * restrict zf = fwc->file;
     zlx_file_status_t fs;
     size_t wsize;
 
@@ -202,8 +202,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
 /* zlx_fvprint **************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    char const * fmt,
+    zlx_file_t * restrict zf,
+    char const * restrict fmt,
     va_list va
 )
 {
@@ -222,8 +222,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
 /* zlx_fprint ***************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_fprint
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    char const * fmt,
+    zlx_file_t * restrict zf,
+    char const * restrict fmt,
     ...
 )
 {

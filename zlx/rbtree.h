@@ -56,7 +56,7 @@
  *
  *  @fn unsigned int foo_rbtree_search
  *  (
- *      PATH_T * ZLX_RESTRICT path,
+ *      PATH_T * restrict path,
  *      NODE_REF_T guard,
  *      KEY_T key,
  *      TREE_CTX_T context
@@ -206,7 +206,7 @@ FDP void CALL_CONV FNAME(init)
 /* search *******************************************************************/
 FDP unsigned int CALL_CONV FNAME(search)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard,
         KEY_T key
         DECL_CTX
@@ -215,7 +215,7 @@ FDP unsigned int CALL_CONV FNAME(search)
 /* extreme ******************************************************************/
 FDP NODE_REF_T CALL_CONV FNAME(extreme)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard,
         unsigned int side
         DECL_CTX
@@ -224,7 +224,7 @@ FDP NODE_REF_T CALL_CONV FNAME(extreme)
 /* first ********************************************************************/
 ZLX_INLINE NODE_REF_T CALL_CONV FNAME(first)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard
         DECL_CTX
     )
@@ -235,7 +235,7 @@ ZLX_INLINE NODE_REF_T CALL_CONV FNAME(first)
 /* last *********************************************************************/
 ZLX_INLINE NODE_REF_T FNAME(last)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard
         DECL_CTX
     )
@@ -246,7 +246,7 @@ ZLX_INLINE NODE_REF_T FNAME(last)
 /* np ***********************************************************************/
 FDP NODE_REF_T CALL_CONV FNAME(np)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         unsigned int side
         DECL_CTX
     ) FDS;
@@ -254,7 +254,7 @@ FDP NODE_REF_T CALL_CONV FNAME(np)
 /* next *********************************************************************/
 ZLX_INLINE NODE_REF_T FNAME(next)
     (
-        PATH_T * ZLX_RESTRICT path
+        PATH_T * restrict path
         DECL_CTX
     )
 {
@@ -264,7 +264,7 @@ ZLX_INLINE NODE_REF_T FNAME(next)
 /* prev *********************************************************************/
 ZLX_INLINE NODE_REF_T FNAME(prev)
     (
-        PATH_T * ZLX_RESTRICT path
+        PATH_T * restrict path
         DECL_CTX
     )
 {
@@ -274,8 +274,8 @@ ZLX_INLINE NODE_REF_T FNAME(prev)
 /* path_copy ****************************************************************/
 ZLX_INLINE void FNAME(path_copy)
     (
-        PATH_T * ZLX_RESTRICT out,
-        PATH_T * ZLX_RESTRICT in
+        PATH_T * restrict out,
+        PATH_T * restrict in
     )
 {
     unsigned int i;
@@ -289,7 +289,7 @@ ZLX_INLINE void FNAME(path_copy)
 /* insert *******************************************************************/
 FDP void CALL_CONV FNAME(insert)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T node
         DECL_CTX
     ) FDS;
@@ -297,7 +297,7 @@ FDP void CALL_CONV FNAME(insert)
 /* delete *******************************************************************/
 FDP void CALL_CONV FNAME(delete)
     (
-        PATH_T * ZLX_RESTRICT path
+        PATH_T * restrict path
         DECL_CTX
     ) FDS;
 
@@ -314,7 +314,7 @@ FDP void CALL_CONV FNAME(dbg_print)
 /* dbg_print_path ***********************************************************/
 FDP void CALL_CONV FNAME(dbg_print_path)
     (
-        PATH_T * ZLX_RESTRICT p
+        PATH_T * restrict p
         DECL_CTX
     ) FDS;
 #else
@@ -329,7 +329,7 @@ ZLX_INLINE void FNAME(dbg_print)
 
 ZLX_INLINE void FNAME(dbg_print_path)
     (
-        PATH_T * ZLX_RESTRICT p
+        PATH_T * restrict p
         DECL_CTX
     )
 { (void) p; UNUSED_CTX }
@@ -364,7 +364,7 @@ FDP void CALL_CONV FNAME(init)
 /* search *******************************************************************/
 FDP unsigned int CALL_CONV FNAME(search)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard,
         KEY_T key
         DECL_CTX
@@ -396,7 +396,7 @@ FDP unsigned int CALL_CONV FNAME(search)
 /* extreme ******************************************************************/
 FDP NODE_REF_T CALL_CONV FNAME(extreme)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T guard,
         unsigned int side
         DECL_CTX
@@ -421,7 +421,7 @@ FDP NODE_REF_T CALL_CONV FNAME(extreme)
 /* np ***********************************************************************/
 FDP NODE_REF_T CALL_CONV FNAME(np)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         unsigned int side
         DECL_CTX
     ) FDS
@@ -453,7 +453,7 @@ FDP NODE_REF_T CALL_CONV FNAME(np)
 /* insert *******************************************************************/
 FDP void CALL_CONV FNAME(insert)
     (
-        PATH_T * ZLX_RESTRICT path,
+        PATH_T * restrict path,
         NODE_REF_T node
         DECL_CTX
     ) FDS
@@ -516,7 +516,7 @@ FDP void CALL_CONV FNAME(insert)
 /* delete *******************************************************************/
 FDP void CALL_CONV FNAME(delete)
     (
-        PATH_T * ZLX_RESTRICT path
+        PATH_T * restrict path
         DECL_CTX
     ) FDS
 {
@@ -665,7 +665,7 @@ FDP void CALL_CONV FNAME(dbg_print)
 
 FDP void CALL_CONV FNAME(dbg_print_path)
     (
-        PATH_T * ZLX_RESTRICT path
+        PATH_T * restrict path
         DECL_CTX
     ) FDS
 {

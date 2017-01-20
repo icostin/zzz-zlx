@@ -47,7 +47,7 @@ typedef ptrdiff_t (ZLX_CALL * zlx_decode_ucp_func_t)
         uint8_t const * in,
         uint8_t const * end,
         unsigned int flags,
-        uint32_t * ZLX_RESTRICT out
+        uint32_t * restrict out
     );
 
 typedef size_t (ZLX_CALL * zlx_encoded_ucp_size_func_t)
@@ -60,7 +60,7 @@ typedef size_t (ZLX_CALL * zlx_encode_ucp_func_t)
     (
         uint32_t ucp,
         unsigned int flags,
-        uint8_t * ZLX_RESTRICT out
+        uint8_t * restrict out
     );
 
 /* zlx_ucp_is_valid *********************************************************/
@@ -171,7 +171,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf32le_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 );
 
 /* zlx_utf16le_to_ucp *******************************************************/
@@ -180,7 +180,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf16le_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 );
 
 /* zlx_utf8_to_ucp **********************************************************/
@@ -189,7 +189,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf8_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 );
 
 /* zlx_uconv ****************************************************************/
@@ -200,10 +200,10 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf8_to_ucp
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_uconv
 (
-    uint8_t const * ZLX_RESTRICT in,
+    uint8_t const * restrict in,
     size_t in_size,
     unsigned int flags,
-    uint8_t * ZLX_RESTRICT out,
+    uint8_t * restrict out,
     size_t out_size,
     size_t * in_pos
 );
@@ -235,8 +235,8 @@ ZLX_API int ZLX_CALL zlx_ucp_term_width (uint32_t ucp);
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_utf8_term_width
 (
-    void * ZLX_RESTRICT obj,
-    uint8_t const * ZLX_RESTRICT data,
+    void * restrict obj,
+    uint8_t const * restrict data,
     size_t size
 );
 

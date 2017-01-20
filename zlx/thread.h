@@ -219,8 +219,8 @@ ZLX_API zlx_mth_xfc_t zlx_nosup_mth_xfc;
  */
 ZLX_INLINE zlx_mutex_t * zlxi_mutex_create
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
-    zlx_mutex_xfc_t * ZLX_RESTRICT mx
+    zlx_ma_t * restrict ma,
+    zlx_mutex_xfc_t * restrict mx
 #if _DEBUG
     , char const * src
     , unsigned int line
@@ -255,9 +255,9 @@ ZLX_INLINE zlx_mutex_t * zlxi_mutex_create
  */
 ZLX_INLINE void zlxi_mutex_destroy
 (
-    zlx_mutex_t * ZLX_RESTRICT m,
-    zlx_ma_t * ZLX_RESTRICT ma,
-    zlx_mutex_xfc_t * ZLX_RESTRICT mx
+    zlx_mutex_t * restrict m,
+    zlx_ma_t * restrict ma,
+    zlx_mutex_xfc_t * restrict mx
 #if _DEBUG
     , char const * src
     , unsigned int line
@@ -297,9 +297,9 @@ ZLX_INLINE void zlxi_mutex_destroy
  */
 ZLX_INLINE zlx_cond_t * zlxi_cond_create
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
-    zlx_cond_xfc_t * ZLX_RESTRICT cx,
-    zlx_mth_status_t * ZLX_RESTRICT status_p
+    zlx_ma_t * restrict ma,
+    zlx_cond_xfc_t * restrict cx,
+    zlx_mth_status_t * restrict status_p
 #if _DEBUG
     , char const * src
     , unsigned int line
@@ -360,9 +360,9 @@ ZLX_INLINE zlx_cond_t * zlxi_cond_create
  */
 ZLX_INLINE void zlxi_cond_destroy
 (
-    zlx_cond_t * ZLX_RESTRICT cond,
-    zlx_ma_t * ZLX_RESTRICT ma,
-    zlx_cond_xfc_t * ZLX_RESTRICT cx
+    zlx_cond_t * restrict cond,
+    zlx_ma_t * restrict ma,
+    zlx_cond_xfc_t * restrict cx
 #if _DEBUG
     , char const * src
     , unsigned int line

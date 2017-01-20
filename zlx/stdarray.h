@@ -6,8 +6,8 @@
 
 ZLX_API void zlx_u8a_copy
 (
-    uint8_t * ZLX_RESTRICT dest,
-    uint8_t const * ZLX_RESTRICT src,
+    uint8_t * restrict dest,
+    uint8_t const * restrict src,
     size_t n
 );
 
@@ -17,8 +17,8 @@ ZLX_API void zlx_u8a_copy
  */
 ZLX_API uint8_t * zlx_u8a_zcopy
 (
-    uint8_t * ZLX_RESTRICT dest,
-    uint8_t const * ZLX_RESTRICT src
+    uint8_t * restrict dest,
+    uint8_t const * restrict src
 );
 
 ZLX_API void zlx_u8a_set (uint8_t * arr, size_t n, uint8_t val);
@@ -30,12 +30,12 @@ ZLX_API size_t zlx_u8a_zlen (uint8_t const * a);
 
 ZLX_API uint8_t * zlx_u8a_insert
 (
-    uint8_t * ZLX_RESTRICT * ZLX_RESTRICT ap,
-    size_t * ZLX_RESTRICT np,
-    size_t * ZLX_RESTRICT mp,
+    uint8_t * restrict * restrict ap,
+    size_t * restrict np,
+    size_t * restrict mp,
     size_t p,
     size_t q,
-    zlx_ma_t * ma
+    zlx_ma_t * restrict ma
 );
 
 

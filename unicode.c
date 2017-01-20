@@ -83,7 +83,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf32le_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 )
 {
     uint32_t ucp;
@@ -101,7 +101,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf16le_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 )
 {
     uint32_t ucp, tcp;
@@ -143,7 +143,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_utf8_to_ucp
     uint8_t const * in,
     uint8_t const * end,
     unsigned int flags,
-    uint32_t * ZLX_RESTRICT out
+    uint32_t * restrict out
 )
 {
     size_t l;
@@ -258,7 +258,7 @@ ZLX_API size_t ZLX_CALL zlx_ucp_to_utf8
 (
     uint32_t ucp,
     unsigned int flags,
-    uint8_t * ZLX_RESTRICT out
+    uint8_t * restrict out
 )
 {
     if (!ucp && (flags & ZLX_UTF8_ENC_TWO_BYTE_NUL))
@@ -281,7 +281,7 @@ ZLX_API size_t ZLX_CALL zlx_ucp_to_utf16le
 (
     uint32_t ucp,
     unsigned int flags,
-    uint8_t * ZLX_RESTRICT out
+    uint8_t * restrict out
 )
 {
     (void) flags;
@@ -300,7 +300,7 @@ ZLX_API size_t ZLX_CALL zlx_ucp_to_utf32le
 (
     uint32_t ucp,
     unsigned int flags,
-    uint8_t * ZLX_RESTRICT out
+    uint8_t * restrict out
 )
 {
     if ((ucp >= 0x10000) && (flags & ZLX_UTF32_ENC_BREAK_SUPPLEM))
@@ -316,10 +316,10 @@ ZLX_API size_t ZLX_CALL zlx_ucp_to_utf32le
 /* zlx_uconv ****************************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_uconv
 (
-    uint8_t const * ZLX_RESTRICT in,
+    uint8_t const * restrict in,
     size_t in_size,
     unsigned int flags,
-    uint8_t * ZLX_RESTRICT out,
+    uint8_t * restrict out,
     size_t out_size,
     size_t * in_pos
 )
@@ -391,8 +391,8 @@ ZLX_API int ZLX_CALL zlx_ucp_term_width (uint32_t ucp)
 /* zlx_utf8_term_width ******************************************************/
 ZLX_API ptrdiff_t ZLX_CALL zlx_utf8_term_width
 (
-    void * ZLX_RESTRICT obj,
-    uint8_t const * ZLX_RESTRICT data,
+    void * restrict obj,
+    uint8_t const * restrict data,
     size_t size
 )
 {

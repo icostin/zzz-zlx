@@ -33,7 +33,7 @@ struct zlx_alloctrk_header_s
 /* alloctrk_info_set ********************************************************/
 static void ZLX_CALL alloctrk_info_set
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_ma_t * restrict ma,
     void * ptr,
     char const * src,
     unsigned int line,
@@ -58,7 +58,7 @@ static void ZLX_CALL alloctrk_info_set
 /* alloctrk_check ***********************************************************/
 static void ZLX_CALL alloctrk_check
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_ma_t * restrict ma,
     void * ptr,
     size_t size,
     char const * src,
@@ -224,12 +224,13 @@ static void * ZLX_CALL alloctrk_realloc
 /* zlx_alloctrk_create ******************************************************/
 ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_create
 (
-    zlx_ma_t * ma,
-    zlx_log_t * log
+    zlx_ma_t * restrict ma,
+    zlx_log_t * restrict log
 )
 {
     zlx_alloctrk_t * zat;
-    zat = ma->realloc(NULL, 0, sizeof(*zat), ma);
+
+    zat = zlx_alloc(ma, sizeof(*zat), "allock tracker mem allocator");
     if (!zat) return NULL;
     zat->base.realloc = alloctrk_realloc;
     zat->base.check = alloctrk_check;
@@ -258,6 +259,7 @@ ZLX_API void ZLX_CALL zlx_alloctrk_dump
     zlx_alloctrk_t * zat = (zlx_alloctrk_t *) ma;
     zlx_np_t * p;
     zlx_alloctrk_header_t * h;
+
     ZLX_LF(zat->log, "alloc tracker state: total=$xp peak=$xp count=$z\n",
            zat->total, zat->peak, zat->count);
     for (p = zat->list.next; p != &zat->list; p = p->next)
@@ -265,7 +267,10 @@ ZLX_API void ZLX_CALL zlx_alloctrk_dump
         h = (zlx_alloctrk_header_t *) p;
         ZLX_LF(zat->log, "[$xp, +$xz]", h + 1, h->size);
 #if _DEBUG
-        ZLX_LF(zat->log, " $s:$i@$s()", h->src, h->line, h->func);
+        ZLX_LF(zat->log, " $s:$i@$s()", 
+               h->src ? h->src : "<src-unknown>", 
+               h->line, 
+               h->func ? h->func : "<func-unknown>");
         if (h->info) ZLX_LF(zat->log, ":$s", h->info);
 #endif
         ZLX_LF(zat->log, " = $.*xs$s\n", (h->size > 16 ? 16 : h->size),
@@ -293,6 +298,18 @@ ZLX_API zlx_ma_t * ZLX_CALL zlx_alloctrk_destroy
             h->size + sizeof(zlx_alloctrk_header_t) + sizeof(uintptr_t), 
             0, bma);
     }
+
+    zlx_free(bma, zat, sizeof(*zat));
     return bma;
+}
+
+/* zlx_alloctrk_get_count ***************************************************/
+ZLX_API size_t ZLX_CALL zlx_alloctrk_get_count
+(
+    zlx_ma_t * ma
+)
+{
+    zlx_alloctrk_t * zat = (zlx_alloctrk_t *) ma;
+    return zat->count;
 }
 

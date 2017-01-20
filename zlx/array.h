@@ -59,28 +59,28 @@
 #endif
 
 FDP void F(set) (T * arr, size_t n, T val) FDS;
-FDP void F(copy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b, size_t n) FDS;
-FDP T * F(zcopy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b) FDS;
+FDP void F(copy) (T * restrict a, T const * restrict b, size_t n) FDS;
+FDP T * F(zcopy) (T * restrict a, T const * restrict b) FDS;
 
 FDP int F(cmp) (T const * a, T const * b, size_t n) FDS;
 FDP T * F(scan) (T const * arr, T value) FDS;
 FDP T * F(search) (T const * a, T const * end, T value) FDS;
 FDP T * F(insert)
 (
-    T * ZLX_RESTRICT * ZLX_RESTRICT ap,
-    size_t * ZLX_RESTRICT np,
-    size_t * ZLX_RESTRICT mp,
+    T * restrict * restrict ap,
+    size_t * restrict np,
+    size_t * restrict mp,
     size_t p,
     size_t q,
     zlx_ma_t * ma
 ) FDS;
 
-FDP size_t F(zlen) (T const * ZLX_RESTRICT a) FDS;
+FDP size_t F(zlen) (T const * restrict a) FDS;
 FDP int F(zcmp) (T const * a, T const * b) FDS;
 
 
 #ifdef ZLX_BODY
-FDP void F(copy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b, size_t n) FDS
+FDP void F(copy) (T * restrict a, T const * restrict b, size_t n) FDS
 {
     size_t i;
     for (i = 0; i < n; ++i)
@@ -89,7 +89,7 @@ FDP void F(copy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b, size_t n) FDS
     }
 }
 
-FDP T * F(zcopy) (T * ZLX_RESTRICT a, T const * ZLX_RESTRICT b) FDS
+FDP T * F(zcopy) (T * restrict a, T const * restrict b) FDS
 {
     size_t i;
     for (i = 0;; ++i)
@@ -123,7 +123,7 @@ FDP T * F(scan) (T const * arr, T value) FDS
     return (T *) arr;
 }
 
-FDP size_t F(zlen) (T const * ZLX_RESTRICT a) FDS
+FDP size_t F(zlen) (T const * restrict a) FDS
 {
     return F(scan)(a, ZERO) - a;
 }
@@ -136,12 +136,12 @@ FDP T * F(search) (T const * a, T const * end, T value) FDS
 
 FDP T * F(insert)
 (
-    T * ZLX_RESTRICT * ZLX_RESTRICT ap,
-    size_t * ZLX_RESTRICT np,
-    size_t * ZLX_RESTRICT mp,
+    T * restrict * restrict ap,
+    size_t * restrict np,
+    size_t * restrict mp,
     size_t p,
     size_t q,
-    zlx_ma_t * ZLX_RESTRICT ma
+    zlx_ma_t * restrict ma
 ) FDS
 {
     T * a;

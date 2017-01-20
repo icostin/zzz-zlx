@@ -20,7 +20,7 @@
 typedef ptrdiff_t (ZLX_CALL * zlx_write_func_t) 
     (
         void * obj,
-        uint8_t const * ZLX_RESTRICT data,
+        uint8_t const * restrict data,
         size_t size
     );
 
@@ -31,7 +31,7 @@ typedef ptrdiff_t (ZLX_CALL * zlx_write_func_t)
 typedef struct zlx_sbw_s zlx_sbw_t;
 struct zlx_sbw_s
 {
-    uint8_t * ZLX_RESTRICT data; /**< pointer to buffer. */
+    uint8_t * restrict data; /**< pointer to buffer. */
     size_t limit; /**< number of bytes available at @a data. */
     size_t size; /**< how much was written to the buffer; this will accurately
                    count the bytes written although anything beyond @a limit
@@ -46,8 +46,8 @@ struct zlx_sbw_s
  */
 ZLX_API zlx_sbw_t * ZLX_CALL zlx_sbw_init
 (
-    zlx_sbw_t * ZLX_RESTRICT sbw,
-    uint8_t * ZLX_RESTRICT data,
+    zlx_sbw_t * restrict sbw,
+    uint8_t * restrict data,
     size_t limit
 );
 
@@ -60,8 +60,8 @@ ZLX_API zlx_sbw_t * ZLX_CALL zlx_sbw_init
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_sbw_write
 (
-    void * ZLX_RESTRICT sbw,
-    uint8_t const * ZLX_RESTRICT data,
+    void * restrict sbw,
+    uint8_t const * restrict data,
     size_t len
 );
 
@@ -72,8 +72,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_sbw_write
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_nop_write
 (
-    void * ZLX_RESTRICT obj,
-    uint8_t const * ZLX_RESTRICT data,
+    void * restrict obj,
+    uint8_t const * restrict data,
     size_t size
 );
 

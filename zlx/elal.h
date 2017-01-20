@@ -47,9 +47,9 @@ struct zlx_elal_s
  */
 ZLX_API unsigned int ZLX_CALL zlx_elal_init
 (
-    zlx_elal_t * ZLX_RESTRICT ea,
-    zlx_ma_t * ZLX_RESTRICT ma,
-    zlx_mutex_xfc_t * ZLX_RESTRICT mutex_xfc,
+    zlx_elal_t * restrict ea,
+    zlx_ma_t * restrict ma,
+    zlx_mutex_xfc_t * restrict mutex_xfc,
     zlx_mutex_t * mutex,
     size_t elem_size,
     uint32_t max_chain_len
@@ -61,7 +61,7 @@ ZLX_API unsigned int ZLX_CALL zlx_elal_init
  */
 ZLX_API void ZLX_CALL zlx_elal_finish
 (
-    zlx_elal_t * ZLX_RESTRICT ea
+    zlx_elal_t * restrict ea
 );
 
 /* zlxi_elal_alloc **********************************************************/
@@ -70,7 +70,7 @@ ZLX_API void ZLX_CALL zlx_elal_finish
  */
 ZLX_API void * ZLX_CALL zlxi_elal_alloc
 (
-    zlx_elal_t * ZLX_RESTRICT ea
+    zlx_elal_t * restrict ea
 );
 
 /* zlxi_elal_free ***********************************************************/
@@ -79,14 +79,14 @@ ZLX_API void * ZLX_CALL zlxi_elal_alloc
  */
 ZLX_API void ZLX_CALL zlxi_elal_free
 (
-    zlx_elal_t * ZLX_RESTRICT ea,
+    zlx_elal_t * restrict ea,
     void * elem
 );
 
 #if _DEBUG || _CHECKED
 ZLX_INLINE void * zlxd_elal_alloc
 (
-    zlx_elal_t * ZLX_RESTRICT ea,
+    zlx_elal_t * restrict ea,
     char const * src,
     unsigned int line,
     char const * func,
@@ -100,7 +100,7 @@ ZLX_INLINE void * zlxd_elal_alloc
 
 ZLX_INLINE void zlxd_elal_free
 (
-    zlx_elal_t * ZLX_RESTRICT ea,
+    zlx_elal_t * restrict ea,
     void * e,
     char const * src,
     unsigned int line,

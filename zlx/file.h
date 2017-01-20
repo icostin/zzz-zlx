@@ -143,8 +143,8 @@ struct zlx_file_class_s
      **/
     ptrdiff_t (ZLX_CALL * read)
         (
-            zlx_file_t * ZLX_RESTRICT f,
-            uint8_t * ZLX_RESTRICT data,
+            zlx_file_t * restrict f,
+            uint8_t * restrict data,
             size_t size
         );
 
@@ -161,15 +161,15 @@ struct zlx_file_class_s
      **/
     ptrdiff_t (ZLX_CALL * write)
         (
-            zlx_file_t * ZLX_RESTRICT f,
-            uint8_t const * ZLX_RESTRICT data,
+            zlx_file_t * restrict f,
+            uint8_t const * restrict data,
             size_t size
         );
 
     /** Seeks in the file. */
     int64_t (ZLX_CALL * seek64)
         (
-            zlx_file_t * ZLX_RESTRICT f,
+            zlx_file_t * restrict f,
             int64_t offset,
             int anchor
         );
@@ -177,18 +177,18 @@ struct zlx_file_class_s
     /** Truncates file at current file position. */
     zlx_file_status_t (ZLX_CALL * truncate)
         (
-            zlx_file_t * ZLX_RESTRICT f
+            zlx_file_t * restrict f
         );
 
     /** Closes the read, write or both sides of the stream */
     zlx_file_status_t (ZLX_CALL * close)
         (
-            zlx_file_t * ZLX_RESTRICT f,
+            zlx_file_t * restrict f,
             unsigned int flags // ZLXF_READ | ZLXF_WRITE
         );
 
     /** A static name describing the file class */
-    char const * ZLX_RESTRICT name;
+    char const * restrict name;
 };
 
 struct zlx_file_s
@@ -216,8 +216,8 @@ struct zlx_file_s
  */
 ZLX_INLINE ptrdiff_t zlx_raw_read
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void * restrict data,
     size_t size
 )
 {
@@ -238,8 +238,8 @@ ZLX_INLINE ptrdiff_t zlx_raw_read
  */
 ZLX_INLINE ptrdiff_t zlx_raw_write
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void const * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void const * restrict data,
     size_t size
 )
 {
@@ -258,8 +258,8 @@ ZLX_INLINE ptrdiff_t zlx_raw_write
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_read
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void * restrict data,
     size_t size
 );
 
@@ -272,8 +272,8 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_read
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_write
 (
-    zlx_file_t * ZLX_RESTRICT zf,
-    void const * ZLX_RESTRICT data,
+    zlx_file_t * restrict zf,
+    void const * restrict data,
     size_t size
 );
 
@@ -302,7 +302,7 @@ struct zlx_file_writer_ctx_s
 ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
 (
     void * obj,
-    uint8_t const * ZLX_RESTRICT data,
+    uint8_t const * restrict data,
     size_t size
 );
 
@@ -321,7 +321,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_file_writer
  */
 ZLX_INLINE int64_t zlx_seek64
 (
-    zlx_file_t * ZLX_RESTRICT zf,
+    zlx_file_t * restrict zf,
     int64_t ofs,
     unsigned int anchor
 )
@@ -342,7 +342,7 @@ ZLX_INLINE int64_t zlx_seek64
  */
 ZLX_INLINE zlx_file_status_t zlx_close
 (
-    zlx_file_t * ZLX_RESTRICT zf
+    zlx_file_t * restrict zf
 )
 {
     return zf->fcls->close(zf, ZLXF_READ | ZLXF_WRITE);
@@ -364,7 +364,7 @@ ZLX_INLINE zlx_file_status_t zlx_close
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
 (
-    zlx_file_t * ZLX_RESTRICT zf,
+    zlx_file_t * restrict zf,
     char const * fmt,
     va_list va
 );
@@ -383,7 +383,7 @@ ZLX_API ptrdiff_t ZLX_CALL zlx_fvprint
  */
 ZLX_API ptrdiff_t ZLX_CALL zlx_fprint
 (
-    zlx_file_t * ZLX_RESTRICT zf,
+    zlx_file_t * restrict zf,
     char const * fmt,
     ...
 );

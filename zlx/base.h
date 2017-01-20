@@ -41,22 +41,32 @@ typedef   signed __int64  int64_t;
 #define ZLX_CALL
 #endif
 
-#ifndef ZLX_RESTRICT
-#   ifdef _ISOC99_SOURCE
-#       define ZLX_RESTRICT restrict
-#   elif _MSC_VER >= 1600
-#       define ZLX_RESTRICT __restrict
-#   elif __GNUC__ >= 3
-#       define ZLX_RESTRICT __restrict__
-#   else
-/*  ZLX_RESTRICT  */
-/**
- *  expands to compiler-specific "restrict" keyword as defined in the C99 
- *  standard
- */
-#       define ZLX_RESTRICT
-#   endif
+#if __STDC_VERSION__ < 199901L
+# if _MSC_VER >= 1600
+#  define restrict __restrict
+# elif __GNUC__ >= 3
+#  define restrict __restrict__
+# else
+#  define restrict
+# endif
 #endif
+
+//#ifndef restrict
+//#   ifdef _ISOC99_SOURCE
+//#       define restrict restrict
+//#   elif _MSC_VER >= 1600
+//#       define restrict __restrict
+//#   elif __GNUC__ >= 3
+//#       define restrict __restrict__
+//#   else
+///*  restrict  */
+///**
+// *  expands to compiler-specific "restrict" keyword as defined in the C99 
+// *  standard
+// */
+//#       define restrict
+//#   endif
+//#endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 #   define ZLX_LIB_EXPORT __declspec(dllexport)

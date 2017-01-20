@@ -30,7 +30,7 @@ typedef void * (ZLX_CALL * zlx_realloc_func_t)
         void * old_ptr,
         size_t old_size,
         size_t new_size,
-        zlx_ma_t * ZLX_RESTRICT ma
+        zlx_ma_t * restrict ma
     );
 
 struct zlx_ma_s
@@ -46,7 +46,7 @@ struct zlx_ma_s
      */
     void (ZLX_CALL * info_set)
         (
-            zlx_ma_t * ZLX_RESTRICT ma,
+            zlx_ma_t * restrict ma,
             void * ptr,
             char const * src,
             unsigned int line,
@@ -59,7 +59,7 @@ struct zlx_ma_s
      */
     void (ZLX_CALL * check)
         (
-            zlx_ma_t * ZLX_RESTRICT ma,
+            zlx_ma_t * restrict ma,
             void * ptr,
             size_t size,
             char const * src,
@@ -71,7 +71,7 @@ struct zlx_ma_s
 /* zlxi_alloc ***************************************************************/
 ZLX_INLINE void * zlxi_alloc
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_ma_t * restrict ma,
     size_t size
 #if _DEBUG
     , char const * src
@@ -92,7 +92,7 @@ ZLX_INLINE void * zlxi_alloc
 /* zlxi_realloc *************************************************************/
 ZLX_INLINE void * zlxi_realloc
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_ma_t * restrict ma,
     void * old_ptr,
     size_t old_size,
     size_t new_size
@@ -124,7 +124,7 @@ ZLX_INLINE void * zlxi_realloc
 /* zlxi_free ****************************************************************/
 ZLX_INLINE void zlxi_free
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
+    zlx_ma_t * restrict ma,
     void * ptr,
     size_t size
 #if _DEBUG
@@ -177,27 +177,27 @@ ZLX_API void * ZLX_CALL zlx_ma_nop_realloc
     void * old_ptr,
     size_t old_size,
     size_t new_size,
-    zlx_ma_t * ZLX_RESTRICT ma
+    zlx_ma_t * restrict ma
 );
 
 ZLX_API void ZLX_CALL zlx_ma_nop_info_set
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
-    void * ptr,
-    char const * src,
+    zlx_ma_t * restrict ma,
+    void * restrict ptr,
+    char const * restrict src,
     unsigned int line,
-    char const * func,
-    char const * info
+    char const * restrict func,
+    char const * restrict info
 );
 
 ZLX_API void ZLX_CALL zlx_ma_nop_check
 (
-    zlx_ma_t * ZLX_RESTRICT ma,
-    void * ptr,
+    zlx_ma_t * restrict ma,
+    void * restrict ptr,
     size_t size,
-    char const * src,
+    char const * restrict src,
     unsigned int line,
-    char const * func
+    char const * restrict func
 );
 
 /* ZLX_ARRAY_ALLOC **********************************************************/
