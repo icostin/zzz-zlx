@@ -31,7 +31,7 @@ union zlx_np_u
 
 /* zlx_dlist_init ***********************************************************/
 /**
- *  Initializes a doubly-linked list by setting both links of the list to 
+ *  Initializes a doubly-linked list by setting both links of the list to
  *  point to itself.
  *  @param list_p [out]
  *      list to initialize
@@ -70,8 +70,8 @@ ZLX_INLINE int zlx_dlist_is_empty (zlx_np_t * list_p)
  */
 ZLX_INLINE void zlx_dlist_ins
 (
-    zlx_np_t * anchor_p, 
-    zlx_np_t * to_ins_p, 
+    zlx_np_t * anchor_p,
+    zlx_np_t * to_ins_p,
     int dir
 )
 {
@@ -155,6 +155,17 @@ ZLX_INLINE void zlx_dlist_del
  */
 #define ZLX_DLIST_PREPEND(_list, _obj_p, _np_field) \
     (zlx_dlist_ins(&(_list), &(_obj_p)->_np_field, ZLX_NEXT))
+
+#define ZLX_DLIST_ENTRY_TO_ITEM(_entry, _item_type, _entry_member) \
+    ((_item_type *) ((uint8_t *) (_entry) \
+                     - ZLX_FIELD_OFS(_item_type, _entry_member)))
+
+#define ZLX_DLIST_EACH(_list, _entry) \
+    for (zlx_np_t * _entry = (_list).next, \
+         * _entry##_next = _entry->next; \
+         _entry != &(_list); \
+         _entry = _entry##_next, _entry##_next = _entry->next)
+
 
 /** @} */
 
