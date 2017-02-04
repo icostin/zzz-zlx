@@ -119,6 +119,13 @@ ZLX_API int zlx_log
 #define ZLX_LD(_log, ...) ((void) 0)
 #endif
 
+
+#define ZLX_LDM(_log, _fmt, ...) \
+    (ZLX_LD((_log), "$s:$i@$s(): " _fmt "\n", \
+            __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__))
+
+#define ZLX_LDMX(_log, ...) ((void) 0)
+
 /* zlx_default_log **********************************************************/
 /**
  *  Global logger instance.
