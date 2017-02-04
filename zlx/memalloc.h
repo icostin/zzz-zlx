@@ -149,9 +149,11 @@ ZLX_INLINE void zlxi_free
 #if _DEBUG
 #define zlx_alloc(_ma, _size, _info) \
     (zlxi_alloc((_ma), (_size), __FILE__, __LINE__, __FUNCTION__, (_info)))
+
 #define zlx_realloc(_ma, _old_ptr, _old_size, _new_size) \
     (zlxi_realloc((_ma), (_old_ptr), (_old_size), (_new_size), \
                   __FILE__, __LINE__, __FUNCTION__, NULL))
+
 #define zlx_free(_ma, _ptr, _size) \
     (zlxi_free((_ma), (_ptr), (_size), __FILE__, __LINE__, __FUNCTION__))
 #else
@@ -167,8 +169,10 @@ ZLX_INLINE void zlxi_free
  *      programmer for what the memory block is indended for
  */
 #define zlx_alloc(_ma, _size, _info) (zlxi_alloc((_ma), (_size)))
+
 #define zlx_realloc(_ma, _old_ptr, _old_size, _new_size) \
     (zlxi_realloc((_ma), (_old_ptr), (_old_size), (_new_size)))
+
 #define zlx_free(_ma, _ptr, _size) (zlxi_free((_ma), (_ptr), (_size)))
 #endif
 
@@ -200,30 +204,145 @@ ZLX_API void ZLX_CALL zlx_ma_nop_check
     char const * restrict func
 );
 
+/* zlxi_array_alloc *********************************************************/
+ZLX_INLINE int zlxi_array_alloc
+(
+    zlx_ma_t * restrict ma,
+    void * * restrict ptr,
+    size_t * restrict count,
+    size_t new_count,
+    size_t item_size
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+    , char const * info
+#endif
+)
+{
+    void * new_ptr;
+    if (new_count > PTRDIFF_MAX / item_size) 
+    {
+        *ptr = NULL;
+        *count = 0;
+        return 1;
+    }
+    new_ptr = ma->realloc(NULL, 0, new_count * item_size, ma);
+    if (new_ptr)
+    {
+#if _DEBUG
+        ma->info_set(ma, new_ptr, src, line, func, info);
+#endif
+        *ptr = new_ptr;
+        *count = new_count;
+    }
+    else
+    {
+        *ptr = NULL;
+        *count = 0;
+    }
+
+    return !new_ptr;
+}
+
+/* zlxi_array_realloc *******************************************************/
+/**
+ *  Resizes a block updating the pointer and size on success.
+ *  @retval 0 resized ok
+ *  @retval 1 failed
+ */
+ZLX_INLINE int zlxi_array_realloc
+(
+    zlx_ma_t * restrict ma,
+    void * * restrict ptr,
+    size_t * restrict count,
+    size_t new_count,
+    size_t item_size
+#if _DEBUG
+    , char const * src
+    , unsigned int line
+    , char const * func
+    , char const * info
+#endif
+)
+{
+    void * new_ptr;
+#if _DEBUG || _CHECKED
+    ma->check(ma, *ptr, *count * item_size, 
+# if _DEBUG
+              src, line, func
+# else
+              NULL, 0, NULL
+# endif
+              );
+#endif
+    if (new_count > PTRDIFF_MAX / item_size) return 1;
+    new_ptr = ma->realloc(*ptr, *count * item_size, new_count * item_size, ma);
+    if (new_ptr)
+    {
+#if _DEBUG
+        ma->info_set(ma, new_ptr, src, line, func, info);
+#endif
+        *ptr = new_ptr;
+        *count = new_count;
+    }
+    return !new_ptr;
+}
+
+#if _DEBUG
+#define ZLX_ARRAY_ALLOC(_ma, _arr_var, _count_var, _count, _info) \
+    (zlxi_array_alloc(_ma, (void * *) &(_arr_var), &(_count_var), (_count), \
+                      sizeof((_arr_var)[0]), \
+                      __FILE__, __LINE__, __FUNCTION__, (_info)))
+#define ZLX_ARRAY_REALLOC(_ma, _arr_var, _count_var, _count, _info) \
+    (zlxi_array_realloc(_ma, (void * *) &(_arr_var), &(_count_var), (_count), \
+                      sizeof((_arr_var)[0]), \
+                      __FILE__, __LINE__, __FUNCTION__, (_info)))
+#else
 /* ZLX_ARRAY_ALLOC **********************************************************/
 /**
- *  Macro to allocate an array of items.
- *  @param _arr [out]
- *      variable that will be filled with the address of the array of items;
- *      the size of the items is inferred from the array type
- *  @param _ma [in, out]
- *      pointer to memory allocator instance (#zlx_ma_t *)
- *  @param _count [in]
- *      number of elements to be allocated
- *  @param _info [in]
- *      debug-only static string describing the allocated array
+ *  Allocates data for an array of items.
+ *  The size of items is inferred from given array variable.
+ *
+ *  @param _ma [in, out] mem allocator
+ *  @param _arr_var [out] variable of type pointer to items
+ *  @param _count_var [out] variable to hold the size (must be size_t)
+ *  @param _count [in] how many items to allocate
+ *  @param _info [in] debug-only info string describing the array
+ *  @retval 0 ok
+ *  @retval 1 failed; the array is inited as NULL for data, 0 for size
  */
-#define ZLX_ARRAY_ALLOC(_arr, _ma, _count, _info) \
-    ((_arr) = ((_count) <= SIZE_MAX / sizeof(*(_arr)) \
-               ? zlx_alloc((_ma), (_count) * sizeof(*(_arr)), (_info)) \
-               : NULL))
+#define ZLX_ARRAY_ALLOC(_ma, _arr_var, _count_var, _count, _info) \
+    (zlxi_array_alloc(_ma, (void * *) &(_arr_var), &(_count_var), (_count), \
+                      sizeof((_arr_var)[0])))
+
+/* ZLX_ARRAY_REALLOC ********************************************************/
+/**
+ *  Reallocates data for an array of items.
+ *  @retval 0 ok
+ *  @retval 1 failed; @a _arr_var and @a _count_var are left unchanged
+ */
+#define ZLX_ARRAY_REALLOC(_ma, _arr_var, _count_var, _count, _info) \
+    (zlxi_array_realloc(_ma, (void * *) &(_arr_var), &(_count_var), (_count), \
+                      sizeof((_arr_var)[0])))
+#endif
+
+/* ZLX_ARRAY_INIT ***********************************************************/
+/**
+ *  Initializes to (NULL, 0) the pair (pointer, size) representing an array.
+ */
+#define ZLX_ARRAY_INIT(_arr_var, _count_var) \
+    ((_arr_var) = NULL, (_count_var) = 0)
 
 /* ZLX_ARRAY_FREE ***********************************************************/
 /**
  *  Macro to free an array of items.
  */
-#define ZLX_ARRAY_FREE(_arr, _ma, _count) \
+#define ZLX_ARRAY_FREE(_ma, _arr, _count) \
     (zlx_free((_ma), (_arr), (_count) * sizeof(*(_arr))))
+
+
+
 
 #endif /* _ZLX_MEM_ALLOC_H */
 
